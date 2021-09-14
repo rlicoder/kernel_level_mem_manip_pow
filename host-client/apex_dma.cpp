@@ -235,32 +235,6 @@ void DoActions()
 						continue;
 					}
 
-					switch (safe_level)
-					{
-					case 1:
-						if (spectators > 0)
-						{
-							if(Target.isGlowing())
-							{
-								Target.disableGlow();
-							}
-							continue;
-						}
-						break;
-					case 2:
-						if (spectators+allied_spectators > 0)
-						{
-							if(Target.isGlowing())
-							{
-								Target.disableGlow();
-							}
-							continue;
-						}
-						break;
-					default:
-						break;
-					}
-
 					if(player_glow && !Target.isGlowing())
 					{
 						Target.enableGlow();
@@ -582,24 +556,6 @@ static void AimbotLoop()
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			if (aim>0)
 			{
-				switch (safe_level)
-				{
-				case 1:
-					if (spectators > 0)
-					{
-						continue;
-					}
-					break;
-				case 2:
-					if (spectators+allied_spectators > 0)
-					{
-						continue;
-					}
-					break;
-				default:
-					break;
-				}
-				
 				if (aimentity == 0 || !aiming)
 				{
 					lock=false;

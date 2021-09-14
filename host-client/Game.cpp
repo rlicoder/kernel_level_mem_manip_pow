@@ -1,6 +1,9 @@
 #include "prediction.h"
 #include <cstdlib>
 #include <ctime>
+#include <vector>
+#include <pair>
+#include <iosteam>
 
 extern Memory apex_mem;
 
@@ -8,6 +11,17 @@ extern bool firing_range;
 float smooth = 100.0f;
 bool aim_no_recoil = true;
 int bone = 2;
+
+
+std::vector<std::pair<float, int>> cfgs {
+	{5, 1},
+	{5, 2},
+	{5, 3},
+	{5, 4},
+	{5, 5}
+};
+
+
 
 bool Entity::Observing(uint64_t entitylist)
 {
@@ -301,21 +315,12 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int safe_l
 
 	Math::NormalizeAngles(Delta);
 
-    if (safe_level == 0)
-    {
-        smooth = 75.0;
-        bone = 1;
-    }
-    else if (safe_level == 1)
-    {
-        smooth = 75.0;
-        bone = 2;
-    }
-    else
-    {
-        smooth = 75.0;
-        bone = 3;
-    }
+	smooth = cfgs[safe_level].first;
+	bone = cfgs[safe_level].second;
+
+	std::cout << "smooth level is: " << smooth << std::endl;
+	std::cout << "bone id is: " << bone << std::endl;
+
     srand(time(0));
 
     if (abs(Delta.x) < .12 && abs(Delta.y) < .12)
