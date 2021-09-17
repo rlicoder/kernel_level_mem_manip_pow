@@ -12,13 +12,14 @@ float smooth = 100.0f;
 bool aim_no_recoil = true;
 int bone = 2;
 
+enum BONE { HEAD = 12, SHOULDER = 14, BODY = 2, KNEE = 65, TOES = 71 };
 
 std::vector<std::pair<float, int>> cfgs {
-	{5, 1},
-	{5, 2},
-	{5, 3},
-	{5, 4},
-	{5, 5}
+	{5, HEAD},
+	{5, SHOULDER},
+	{5, BODY},
+	{5, KNEE},
+	{5, TOES}
 };
 
 
@@ -34,16 +35,6 @@ bool Entity::Observing(uint64_t entitylist)
 	}
 	return 0;*/
 	return *(bool*)(buffer + OFFSET_OBSERVER_MODE);
-}
-
-std::string Entity::getName()
-{
-    std::string name(32, ' ');
-    for (int i = 0; i < 33; i++)
-    {
-        name[i] = (char)*(buffer + OFFSET_NAME + i);
-    }
-    return name;
 }
 
 //https://github.com/CasualX/apexbot/blob/master/src/state.cpp#L104
@@ -240,6 +231,16 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int& safe_
 			return QAngle(0, 0, 0);
 		}
 	}
+
+	if (safe_level >= cfgs.size())
+	{
+		safe_level = 0;
+    }
+	smooth = cfgs[safe_level].first;
+	bone = cfgs[safe_level].second;
+
+	std::cout << "smooth level is: " << smooth << std::endl;
+	std::cout << "bone id is: " << bone << std::endl;
 	
 	Vector LocalCamera = from.GetCamPos();
 	Vector TargetBonePosition = target.getBonePosition(bone);
@@ -299,16 +300,6 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int& safe_
 	}
 
 	Math::NormalizeAngles(Delta);
-
-	if (safe_level >= cfgs.size())
-	{
-		safe_level = 0;
-    }
-	smooth = cfgs[safe_level].first;
-	bone = cfgs[safe_level].second;
-
-	std::cout << "smooth level is: " << smooth << std::endl;
-	std::cout << "bone id is: " << bone << std::endl;
 
     srand(time(0));
 

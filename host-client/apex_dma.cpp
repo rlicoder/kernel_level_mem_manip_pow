@@ -23,7 +23,7 @@ uintptr_t aimentity = 0;
 uintptr_t tmp_aimentity = 0;
 uintptr_t lastaimentity = 0;
 float max = 999.0f;
-//max distance it in which it will lock onto a player
+//max distance it in which it will lock onto a player and draw esp as well.
 float max_dist = 200.0f*40.0f;
 int team_player = 0;
 int tmp_spec = 0, spectators = 0;
@@ -443,6 +443,7 @@ static void EspLoop()
 
 static void SpecList()
 {
+	//maybe convert to imgui later
     while (true)
     {
         std::map<int,bool> teamalive;
