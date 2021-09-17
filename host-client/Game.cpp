@@ -100,6 +100,7 @@ bool Entity::isDummy()
 	char class_name[33] = {};
 	get_class_name(ptr, class_name);
 
+	//source of my firing range woes?
 	return strncmp(class_name, "CAI_BaseNPC", 11) == 0;
 }
 
@@ -155,22 +156,6 @@ bool Entity::isGlowing()
 bool Entity::isZooming()
 {
 	return *(int*)(buffer + OFFSET_ZOOMING) == 1;
-}
-
-void Entity::enableGlow()
-{
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_T1, 16256);
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_T2, 1193322764);
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 7);
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS, 2);
-}
-
-void Entity::disableGlow()
-{
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_T1, 0);
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_T2, 0);
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_ENABLE, 2);
-	apex_mem.Write<int>(ptr + OFFSET_GLOW_THROUGH_WALLS, 5);
 }
 
 void Entity::SetViewAngles(SVector angles)
@@ -238,7 +223,7 @@ float CalculateFov(Entity& from, Entity& target)
 	return Math::GetFov(ViewAngles, Angle);
 }
 
-QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int safe_level)
+QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int& safe_level)
 {
 	Entity target = getEntity(t);
 	if(firing_range)
@@ -315,6 +300,10 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int safe_l
 
 	Math::NormalizeAngles(Delta);
 
+	if (safe_level >= cfgs.size())
+	{
+		safe_level = 0;
+    }
 	smooth = cfgs[safe_level].first;
 	bone = cfgs[safe_level].second;
 

@@ -12,6 +12,8 @@
 #include "Game.h"
 #include <thread>
 
+//check why firing range must use c++
+
 Memory apex_mem;
 Memory client_mem;
 
@@ -21,6 +23,7 @@ uintptr_t aimentity = 0;
 uintptr_t tmp_aimentity = 0;
 uintptr_t lastaimentity = 0;
 float max = 999.0f;
+//max distance it in which it will lock onto a player
 float max_dist = 200.0f*40.0f;
 int team_player = 0;
 int tmp_spec = 0, spectators = 0;
@@ -32,6 +35,7 @@ bool esp = false;
 bool item_glow = false;
 bool player_glow = false;
 extern bool aim_no_recoil;
+//levels alternated by the f7 key
 int safe_level = 0;
 bool aiming = false;
 extern float smooth;
@@ -66,6 +70,7 @@ typedef struct player
 	char name[33] = { 0 };
 }player;
 
+//4x4 matrix called "View matrix"
 struct Matrix
 {
 	float matrix[16];
@@ -79,10 +84,11 @@ float lastvis_aim[toRead];
 void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int index)
 {
 	int entity_team = target.getTeamId();
+/* pretty sure obvserving is broken, uncommenting for now
 	bool obs = target.Observing(entitylist);
 	if (obs)
 	{
-		/*if(obs == LPlayer.ptr)
+		if(obs == LPlayer.ptr)
 		{
 			if (entity_team == team_player)
 			{
@@ -92,10 +98,11 @@ void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int ind
 			{
 				tmp_spec++;
 			}
-		}*/
+		}
 		tmp_spec++;
 		return;
 	}
+*/
 	Vector EntityPosition = target.getPosition();
 	Vector LocalPlayerPosition = LPlayer.getPosition();
 	float dist = LocalPlayerPosition.DistTo(EntityPosition);
@@ -106,7 +113,7 @@ void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int ind
 
 	if(!firing_range)
 		if (entity_team < 0 || entity_team>50 || entity_team == team_player) return;
-	
+
 	if(aim==2)
 	{
 		if((target.lastVisTime() > lastvis_aim[index]))
@@ -199,15 +206,6 @@ void DoActions()
 						continue;
 					}
 
-					if(player_glow && !Target.isGlowing())
-					{
-						Target.enableGlow();
-					}
-					else if(!player_glow && Target.isGlowing())
-					{
-						Target.disableGlow();
-					}
-
 					ProcessPlayer(LPlayer, Target, entitylist, c);
 					c++;
 				}
@@ -233,15 +231,6 @@ void DoActions()
 					if (entity_team == team_player)
 					{
 						continue;
-					}
-
-					if(player_glow && !Target.isGlowing())
-					{
-						Target.enableGlow();
-					}
-					else if(!player_glow && Target.isGlowing())
-					{
-						Target.disableGlow();
 					}
 				}
 			}
@@ -271,35 +260,6 @@ static void EspLoop()
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 			if (esp)
 			{
-				valid = false;
-				switch (safe_level)
-				{
-				case 1:
-					if (spectators > 0)
-					{
-						next = true;
-						while(next && g_Base!=0 && c_Base!=0 && esp)
-						{
-							std::this_thread::sleep_for(std::chrono::milliseconds(1));
-						}
-						continue;
-					}
-					break;
-				case 2:
-					if (spectators+allied_spectators > 0)
-					{
-						next = true;
-						while(next && g_Base!=0 && c_Base!=0 && esp)
-						{
-							std::this_thread::sleep_for(std::chrono::milliseconds(1));
-						}
-						continue;
-					}
-					break;
-				default:
-					break;
-				}
-
 				uint64_t LocalPlayer = 0;
 				apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
 				if (LocalPlayer == 0)
@@ -344,32 +304,18 @@ static void EspLoop()
 					{
 						uint64_t centity = 0;
 						apex_mem.Read<uint64_t>( entitylist + ((uint64_t)i << 5), centity);
-						if (centity == 0)
-						{
-							continue;
-						}		
-						
-						if (LocalPlayer == centity)
+						if (centity == 0 || LocalPlauer == centity)
 						{
 							continue;
 						}
 
 						Entity Target = getEntity(centity);
 
-						if (!Target.isDummy())
+						if (!Target.isDummy() || !Target.isPlayer() || !Target.isAlive()))
 						{
 							continue;
 						}
 
-                        if (!Target.isPlayer())
-                        {
-                            continue;
-                        }
-
-						if (!Target.isAlive())
-						{
-							continue;
-						}
 						int entity_team = Target.getTeamId();
 
 						Vector EntityPosition = Target.getPosition();
@@ -384,6 +330,8 @@ static void EspLoop()
 						if (bs.x > 0 && bs.y > 0)
 						{
 							Vector hs = Vector();
+							//should be 12?
+							//this deals with boxes. perhaps they want it centered and it was poor variable naming
 							Vector HeadPosition = Target.getBonePosition(8);
 							WorldToScreen(HeadPosition, m.matrix, 1920, 1080, hs);
 							float height = abs(abs(hs.y) - abs(bs.y));
@@ -406,6 +354,8 @@ static void EspLoop()
 								health,
 								shield	
 							};
+							//not sure why i-1 is necessary... a myster for another day
+							//utf-8 btw
 							Target.get_name(g_Base, i-1, &players[c].name[0]);
 							lastvis_esp[c] = Target.lastVisTime();
 							valid = true;
@@ -420,24 +370,14 @@ static void EspLoop()
 					{
 						uint64_t centity = 0;
 						apex_mem.Read<uint64_t>( entitylist + ((uint64_t)i << 5), centity);
-						if (centity == 0)
-						{
-							continue;
-						}
-						
-						if (LocalPlayer == centity)
+						if (centity == 0 || LocalPlayer == centity )
 						{
 							continue;
 						}
 
 						Entity Target = getEntity(centity);
 						
-						if (!Target.isPlayer())
-						{
-							continue;
-						}
-
-						if (!Target.isAlive())
+						if (!Target.isPlayer() || !Target.isAlive())
 						{
 							continue;
 						}
@@ -577,6 +517,7 @@ static void AimbotLoop()
                 }
                 float current_time;
                 float lastvis = getEntity(aimentity).lastVisTime();
+				//based off source engine sdk
                 apex_mem.Read<float>(g_Base + OFFSET_GLOBAL_VARS + 0x10, current_time);
                 bool visible = lastvis > 0.0f && fabsf(lastvis - current_time) < 0.1f;
                 if (!visible)
