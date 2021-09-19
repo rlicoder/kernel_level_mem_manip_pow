@@ -2,8 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <vector>
-#include <pair>
-#include <iosteam>
+#include <iostream>
 
 extern Memory apex_mem;
 
@@ -12,29 +11,22 @@ float smooth = 100.0f;
 bool aim_no_recoil = true;
 int bone = 2;
 
-enum BONE { HEAD = 12, SHOULDER = 14, BODY = 2, KNEE = 65, TOES = 71 };
 
 std::vector<std::pair<float, int>> cfgs {
-	{5, HEAD},
-	{5, SHOULDER},
-	{5, BODY},
-	{5, KNEE},
-	{5, TOES}
+	{10, 8},
+	{10, 8},
+	{10, 8},
 };
 
 
-
-bool Entity::Observing(uint64_t entitylist)
+std::string Entity::getName()
 {
-	/*uint64_t index = *(uint64_t*)(buffer + OFFSET_OBSERVING_TARGET);
-	index &= ENT_ENTRY_MASK;
-	if (index > 0)
-	{
-		uint64_t centity2 = apex_mem.Read<uint64_t>(entitylist + ((uint64_t)index << 5));
-		return centity2;
-	}
-	return 0;*/
-	return *(bool*)(buffer + OFFSET_OBSERVER_MODE);
+    std::string name(32, ' ');
+    for (int i = 0; i < 33; i++)
+    {
+        name[i] = (char)*(buffer + OFFSET_NAME + i);
+    }
+    return name;
 }
 
 //https://github.com/CasualX/apexbot/blob/master/src/state.cpp#L104
@@ -91,7 +83,6 @@ bool Entity::isDummy()
 	char class_name[33] = {};
 	get_class_name(ptr, class_name);
 
-	//source of my firing range woes?
 	return strncmp(class_name, "CAI_BaseNPC", 11) == 0;
 }
 
@@ -139,11 +130,6 @@ Vector Entity::GetViewAnglesV()
 	return *(Vector*)(buffer + OFFSET_VIEWANGLES);
 }
 
-bool Entity::isGlowing()
-{
-	return *(int*)(buffer + OFFSET_GLOW_ENABLE) == 7;
-}
-
 bool Entity::isZooming()
 {
 	return *(int*)(buffer + OFFSET_ZOOMING) == 1;
@@ -177,29 +163,6 @@ void Entity::get_name(uint64_t g_Base, uint64_t index, char* name)
 	apex_mem.ReadArray<char>(name_ptr, name, 32);
 }
 
-bool Item::isItem()
-{
-	char class_name[33] = {};
-	get_class_name(ptr, class_name);
-
-	return strncmp(class_name, "CPropSurvival", 13) == 0;
-}
-
-bool Item::isGlowing()
-{
-	return *(int*)(buffer + OFFSET_ITEM_GLOW) == 1363184265;
-}
-
-void Item::enableGlow()
-{
-	apex_mem.Write<int>(ptr + OFFSET_ITEM_GLOW, 1363184265);
-}
-
-void Item::disableGlow()
-{
-	apex_mem.Write<int>(ptr + OFFSET_ITEM_GLOW, 1411417991);
-}
-
 Vector Item::getPosition()
 {
 	return *(Vector*)(buffer + OFFSET_ORIGIN);
@@ -214,7 +177,7 @@ float CalculateFov(Entity& from, Entity& target)
 	return Math::GetFov(ViewAngles, Angle);
 }
 
-QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int& safe_level)
+QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int safe_level)
 {
 	Entity target = getEntity(t);
 	if(firing_range)
@@ -231,16 +194,6 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int& safe_
 			return QAngle(0, 0, 0);
 		}
 	}
-
-	if (safe_level >= cfgs.size())
-	{
-		safe_level = 0;
-    }
-	smooth = cfgs[safe_level].first;
-	bone = cfgs[safe_level].second;
-
-	std::cout << "smooth level is: " << smooth << std::endl;
-	std::cout << "bone id is: " << bone << std::endl;
 	
 	Vector LocalCamera = from.GetCamPos();
 	Vector TargetBonePosition = target.getBonePosition(bone);
@@ -300,6 +253,16 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int& safe_
 	}
 
 	Math::NormalizeAngles(Delta);
+
+    if (safe_level >= cfgs.size())
+    {
+        safe_level = 2;
+    }
+	smooth = cfgs[safe_level].first;
+	bone = cfgs[safe_level].second;
+
+	std::cout << "smooth level is: " << smooth << std::endl;
+	std::cout << "bone id is: " << bone << std::endl;
 
     srand(time(0));
 

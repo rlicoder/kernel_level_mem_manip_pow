@@ -29,7 +29,6 @@ public:
 	int getTeamId();
 	int getHealth();
 	int getShield();
-	bool isGlowing();
 	bool isZooming();
 	Vector getAbsVelocity();
 	QAngle GetSwayAngles();
@@ -38,12 +37,9 @@ public:
 	QAngle GetRecoil();
 	Vector GetViewAnglesV();
 
-	void enableGlow();
-	void disableGlow();
 	void SetViewAngles(SVector angles);
 	void SetViewAngles(QAngle& angles);
 	Vector getBonePosition(int id);
-	bool Observing(uint64_t entitylist);
 	void get_name(uint64_t g_Base, uint64_t index, char* name);
     std::string getName();
 };
@@ -55,10 +51,7 @@ public:
 	uint8_t buffer[0x3FF0];
 	Vector getPosition();
 	bool isItem();
-	bool isGlowing();
 	
-	void enableGlow();
-	void disableGlow();
 };
 
 class WeaponXEntity

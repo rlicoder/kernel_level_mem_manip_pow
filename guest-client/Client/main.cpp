@@ -18,7 +18,7 @@ typedef struct player
 }player;
 
 const int SAFE_LEVEL_MAX = 5;
-int aim_key = VK_XBUTTON1;
+int aim_key = VK_RBUTTON;
 bool use_nvidia = true;
 bool active = true;
 bool ready = false;
