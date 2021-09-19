@@ -206,7 +206,7 @@ int main(int argc, char** argv)
 			safe_level++;
 			if (safe_level == SAFE_LEVEL_MAX)
 			{
-				safe_level = 1;
+				safe_level = 0;
 			}
 		}
 		else if (!IsKeyDown(VK_F7) && k_f7 == 1)

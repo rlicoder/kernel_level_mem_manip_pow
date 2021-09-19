@@ -225,33 +225,6 @@ static void EspLoop()
             if (esp)
             {
                 valid = false;
-                switch (safe_level)
-                {
-                    case 1:
-                        if (spectators > 0)
-                        {
-                            next = true;
-                            while(next && g_Base!=0 && c_Base!=0 && esp)
-                            {
-                                std::this_thread::sleep_for(std::chrono::milliseconds(1));
-                            }
-                            continue;
-                        }
-                        break;
-                    case 2:
-                        if (spectators+allied_spectators > 0)
-                        {
-                            next = true;
-                            while(next && g_Base!=0 && c_Base!=0 && esp)
-                            {
-                                std::this_thread::sleep_for(std::chrono::milliseconds(1));
-                            }
-                            continue;
-                        }
-                        break;
-                    default:
-                        break;
-                }
 
                 uint64_t LocalPlayer = 0;
                 apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
@@ -611,19 +584,6 @@ static void set_vars(uint64_t add_addr)
             client_mem.Read<int>(aim_addr, aim);
             client_mem.Read<bool>(esp_addr, esp);
             client_mem.Read<int>(safe_lev_addr, safe_level);
-            if (temp != safe_level)
-            {
-                temp = safe_level;
-                std::cout << temp << " " << safe_level << std::endl;
-                std::cout << safe_level << " " << safe_level << std::endl;
-                safe_level++;
-                bone = safe_level;
-                std::cout << "bone is: " << bone << std::endl;
-                if (safe_level == 9)
-                {
-                    safe_level = 0;
-                }
-            }
             client_mem.Read<bool>(aiming_addr, aiming);
             client_mem.Read<float>(max_dist_addr, max_dist);
             client_mem.Read<bool>(item_glow_addr, item_glow);

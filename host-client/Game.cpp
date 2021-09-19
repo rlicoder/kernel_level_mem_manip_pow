@@ -177,7 +177,7 @@ float CalculateFov(Entity& from, Entity& target)
 	return Math::GetFov(ViewAngles, Angle);
 }
 
-QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int safe_level)
+QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int &safe_level)
 {
 	Entity target = getEntity(t);
 	if(firing_range)
@@ -254,15 +254,12 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int safe_l
 
 	Math::NormalizeAngles(Delta);
 
-    if (safe_level >= cfgs.size())
-    {
-        safe_level = 2;
-    }
+	if (safe_level >= cfgs.size())
+	{
+		safe_level = 0;
+	}
 	smooth = cfgs[safe_level].first;
 	bone = cfgs[safe_level].second;
-
-	std::cout << "smooth level is: " << smooth << std::endl;
-	std::cout << "bone id is: " << bone << std::endl;
 
     srand(time(0));
 
