@@ -504,7 +504,7 @@ static void AimbotLoop()
                 float current_time;
                 float lastvis = getEntity(aimentity).lastVisTime();
                 apex_mem.Read<float>(g_Base + OFFSET_GLOBAL_VARS + 0x10, current_time);
-                bool visible = lastvis > 0.0f && fabsf(lastvis - current_time) < 0.1f;
+                bool visible = lastvis > 0.0f && fabsf(lastvis - current_time) < 0.07f;
                 if (!visible)
                 {
                     continue;
