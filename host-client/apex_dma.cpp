@@ -65,6 +65,11 @@ typedef struct player
     char name[33] = { 0 };
 }player;
 
+typedef struct specname
+{
+    char name[33] = { 0 };
+}spacname;
+
 struct Matrix
 {
     float matrix[16];
@@ -404,9 +409,9 @@ static void EspLoop()
     esp_t = false;
 }
 
-speclist[50][33];
+char speclist[50][33];
 
-static void SpecList()
+static void SpecList(uintptr_t numSpec_addr, uintptr_t speclist_addr)
 {
     while (true)
     {
@@ -445,10 +450,10 @@ static void SpecList()
                 cur++;
             }
         }
-        client.mem.Write<int>(numSpec_addr, cur);
+        client_mem.Write<int>(numSpec_addr, cur);
         for (int i = 0; i < cur; i++)
         {
-            client_mem.WriteArray<char[33]>(speclist_addr + (33 * i), speclist[i], 33);
+            client_mem.WriteArray<specname>(speclist_addr + (33 * i), speclist[i], 33);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
@@ -614,7 +619,7 @@ int main(int argc, char *argv[])
     //const char* ap_proc = "EasyAntiCheat_launcher.exe";
 
     //Client "add" offset
-    uint64_t add_off = 0x3e880;
+    uint64_t add_off = 0x2f880;
 
     std::thread aimbot_thr;
     std::thread esp_thr;
