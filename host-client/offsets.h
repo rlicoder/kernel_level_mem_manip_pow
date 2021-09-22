@@ -39,6 +39,6 @@
     #define OFFSET_VISIBLE_TIME         0x1Ad4 //CPlayer!lastVisibleTime
     #define OFFSET_BULLET_SPEED         0x1EE0 //CWeaponX!m_flProjectileSpeed
     #define OFFSET_BULLET_SCALE         0x1EE8 //CWeaponX!m_flProjectileScale
-    #define OFFSET_AIMPUNCH				0x2438 //m_currentFrameLocalPlayer.m_vecPunchWeapon_Angle
+    #define OFFSET_AIMPUNCH				0x2450 //m_currentFrameLocalPlayer.m_vecPunchWeapon_Angle
 
 #endif
