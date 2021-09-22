@@ -1,6 +1,6 @@
 #include "overlay.h"
 
-extern int aim;
+extern bool aim;
 extern bool esp;
 extern bool item_glow;
 extern bool player_glow;
@@ -23,8 +23,8 @@ bool k_leftclick = false;
 bool k_ins = false;
 bool show_menu = false;
 
-extern specNum;
-extern speclist[50][33];
+extern int numSpec;
+extern char specnames[50][33];
 
 visuals v;
 
@@ -129,9 +129,9 @@ void Overlay::RenderInfo()
 	ImGui::TextColored(WHITE, "%s\n\n", curVal);
 
 	ImGui::TextColored(BLUE, "%s\n", "SPECTATORS");
-	for (int i = 0; i < specNum; i++)
+	for (int i = 0; i < numSpec; i++)
 	{
-		String(ImVec(10, 120 + (20 * i)), WHITE, speclist[i]);
+		String(ImVec2(10, 120 + (20 * i)), WHITE, specnames[i]);
     }
 
 	ImGui::SameLine();
@@ -258,11 +258,7 @@ DWORD Overlay::CreateOverlay()
 			k_ins = false;
 		}
 		
-		if(show_menu)
-			RenderMenu();
-		else
-			RenderInfo();
-
+		RenderInfo();
 		RenderEsp();
 		// Rendering
 		ImGui::EndFrame();

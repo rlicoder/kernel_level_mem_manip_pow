@@ -24,7 +24,6 @@ bool headbone = false;
 int current_cfg = ESP;
 int aim_key = VK_XBUTTON1;
 bool use_nvidia = true;
-int numSpec;
 bool active = true;
 bool ready = false;
 extern visuals v;
@@ -44,7 +43,8 @@ float max_fov = 25.0f;
 int bone = 2;
 const float max_smooth = 175;
 bool thirdperson = false;
-char[50][33] specnames;
+char specnames[50][33];
+int numSpec = 0;
 
 bool valid = false; //write
 bool next = false; //read write
