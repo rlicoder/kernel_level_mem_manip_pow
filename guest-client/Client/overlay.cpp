@@ -12,6 +12,7 @@ extern int spectators;
 extern int allied_spectators;
 extern float max_dist;
 extern float smooth;
+extern int current_cfg;
 extern float max_fov;
 extern int bone;
 extern bool thirdperson;
@@ -21,6 +22,9 @@ bool k_leftclick = false;
 bool k_ins = false;
 bool show_menu = false;
 visuals v;
+
+enum cfg { ESP, SMOOTH, BONE };
+enum BONES { BODY = 2, HEAD = 12 };
 
 extern bool IsKeyDown(int vk);
 
@@ -211,7 +215,7 @@ void Overlay::RenderMenu()
 void Overlay::RenderInfo()
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(20, 20));
+	ImGui::SetNextWindowSize(ImVec2(100, 200));
 	ImGui::Begin(XorStr("##info"), (bool*)true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
 	switch (safe_level)
 	{
@@ -227,7 +231,28 @@ void Overlay::RenderInfo()
 	default:
 		break;
 	}
-	ImGui::TextColored(RED, "%d", spectators);
+	std::string curEdit;
+	std::string curVal;
+	switch (current_cfg)
+	{
+		case BONE:
+			curEdit = "bone";
+			curVal = bone == 12 ? "HEAD" : "BODY";
+			break;
+		case ESP:
+			curEdit = "ESP";
+			curVal = std::to_string(max_dist / 39.62);
+			break;
+		case SMOOTH:
+			curEdit = "SMOOTH";
+			curVal = std::to_string(smooth);
+			break;
+	}
+	
+	ImGui::TextColored((aim ? GREEN : RED), "%s\n", "AIM");
+	ImGui::TextColored((esp ? GREEN : RED), "%s\n", "ESP");
+	ImGui::TextColored(RED, "%s\n", curEdit);
+	ImGui::TextColored(WHITE, "%s\n", curVal);
 	ImGui::SameLine();
 	/*ImGui::Text("-");
 	ImGui::SameLine();

@@ -1,7 +1,7 @@
-﻿  main.cpp
+﻿  overlay.cpp
   Generating code
-  8 of 1508 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
+  38 of 1521 functions ( 2.5%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    22 functions had inline decision re-evaluated but remain unchanged
+    21 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Client.vcxproj -> C:\Users\a\Documents\GitHub\kernel_level_mem_manip_pow\guest-client\x64\Release\client_ap.exe

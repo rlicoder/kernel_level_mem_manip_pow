@@ -1,4 +1,5 @@
 #include "main.h"
+#include <map>
 
 typedef struct player
 {
@@ -17,7 +18,10 @@ typedef struct player
 	char name[33] = { 0 };
 }player;
 
-const int SAFE_LEVEL_MAX = 5;
+enum cfg {ESP, SMOOTH, BONE};
+enum BONES {BODY = 2, HEAD = 12};
+bool headbone = false;
+int current_cfg = ESP;
 int aim_key = VK_XBUTTON1;
 bool use_nvidia = true;
 bool active = true;
@@ -34,9 +38,10 @@ bool aim_no_recoil = true;
 bool aiming = false; //read
 uint64_t g_Base = 0; //write
 float max_dist = 200.0f*40.0f; //read
-float smooth = 12.0f;
-float max_fov = 15.0f;
+float smooth = 50.0f;
+float max_fov = 25.0f;
 int bone = 2;
+const float max_smooth = 175;
 bool thirdperson = false;
 
 bool valid = false; //write
@@ -111,7 +116,7 @@ void Overlay::RenderEsp()
 						String(ImVec2(players[i].boxMiddle, (players[i].b_y - players[i].height - 15)), WHITE, players[i].name);
 				}
 			}
-
+			
 			ImGui::End();
 		}
 	}
@@ -159,6 +164,35 @@ int main(int argc, char** argv)
 	while (active)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		if (IsKeyDown(VK_UP))
+		{
+			if (current_cfg != ESP)
+			{
+				current_cfg--;
+			}
+			
+			std::this_thread::sleep_for(std::chrono::milliseconds(135));
+		}
+		if (IsKeyDown(VK_DOWN))
+		{
+			if (current_cfg != BONE)
+			{
+				current_cfg++;
+			}
+			switch (current_cfg)
+			{
+			case BONE:
+				std::cout << "using bone" << std::endl;
+				break;
+			case ESP:
+				std::cout << "using esp" << std::endl;
+				break;
+			case SMOOTH:
+				std::cout << "using smooth" << std::endl;
+				break;
+			}
+			std::this_thread::sleep_for(std::chrono::milliseconds(135));
+		}
 		if (IsKeyDown(VK_F4))
 		{
 			active = false;
@@ -197,20 +231,6 @@ int main(int argc, char** argv)
 			k_f6 = 0;
 		}
 
-		if (IsKeyDown(VK_F7) && k_f7 == 0)
-		{
-			k_f7 = 1;
-			safe_level++;
-			if (safe_level == SAFE_LEVEL_MAX)
-			{
-				safe_level = 0;
-			}
-		}
-		else if (!IsKeyDown(VK_F7) && k_f7 == 1)
-		{
-			k_f7 = 0;
-		}
-
 		if (IsKeyDown(VK_F8) && k_f8 == 0)
 		{
 			k_f8 = 1;
@@ -223,16 +243,58 @@ int main(int argc, char** argv)
 
 		if (IsKeyDown(VK_LEFT))
 		{
-			if (max_dist > 100.0f * 40.0f)
-				max_dist -= 50.0f * 40.0f;
-			std::this_thread::sleep_for(std::chrono::milliseconds(130));
+			switch (current_cfg)
+			{
+			case ESP:
+				if (max_dist > 100.0f * 40.0f)
+					max_dist -= 50.0f * 40.0f;
+				std::cout << "maxdist is " << max_dist << std::endl;
+				break;
+			case SMOOTH:
+				if (smooth > 25)
+					smooth -= 25;
+				std::cout << "smooth is: " << smooth << std::endl;
+				break;
+			case BONE:
+			{
+				headbone = !headbone;
+				bone = (headbone ? HEAD : BODY);
+				std::cout << "you are aiming at the " << (headbone ? "HEAD" : "BODY") << std::endl;
+				break;
+			}
+			default:
+				std::cout << "ERROR IN VKLEFT FUNC" << std::endl;
+			}
+			
+			std::this_thread::sleep_for(std::chrono::milliseconds(135));
 		}
 
 		if (IsKeyDown(VK_RIGHT))
 		{
-			if (max_dist < 800.0f * 40.0f)
-				max_dist += 50.0f * 40.0f;
-			std::this_thread::sleep_for(std::chrono::milliseconds(130));
+			
+			switch (current_cfg)
+			{
+			case ESP:
+				if (max_dist < 800.0f * 40.0f)
+					max_dist += 50.0f * 40.0f;
+				std::cout << "maxdist is " << max_dist << std::endl;
+				break;
+			case SMOOTH:
+				if (smooth < max_smooth)
+					smooth += 25;
+				std::cout << "smooth is: " << smooth << std::endl;
+				break;
+			case BONE:
+			{
+				headbone = !headbone;
+				bone = (headbone ? HEAD : BODY);
+				std::cout << "you are aiming at the " << (headbone ? "HEAD" : "BODY") << std::endl;
+				break;
+			}
+			default:
+				std::cout << "ERROR IN VKLEFT FUNC" << std::endl;
+			}
+			std::this_thread::sleep_for(std::chrono::milliseconds(135));
 		}
 
 		if (IsKeyDown(aim_key))
