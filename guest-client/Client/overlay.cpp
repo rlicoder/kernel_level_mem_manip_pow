@@ -12,6 +12,7 @@ extern int spectators;
 extern int allied_spectators;
 extern float max_dist;
 extern float smooth;
+extern int numSpec;
 extern int current_cfg;
 extern float max_fov;
 extern int bone;
@@ -21,6 +22,10 @@ int height;
 bool k_leftclick = false;
 bool k_ins = false;
 bool show_menu = false;
+
+extern specNum;
+extern speclist[50][33];
+
 visuals v;
 
 enum cfg { ESP, SMOOTH, BONE };
@@ -80,138 +85,6 @@ bool CreateDeviceD3D(HWND hWnd);
 void CleanupDeviceD3D();
 void ResetDevice();
 
-void Overlay::RenderMenu()
-{
-	static bool aim_enable = false;
-	static bool vis_check = false;
-	static bool spec_disable = false;
-	static bool all_spec_disable = false;
-
-	if (aim > 0)
-	{
-		aim_enable = true;
-		if (aim > 1)
-		{
-			vis_check = true;
-		}
-		else
-		{
-			vis_check = false;
-		}
-	}
-	else
-	{
-		aim_enable = false;
-		vis_check = false;
-	}
-
-	if (safe_level > 0)
-	{
-		spec_disable = true;
-		if (safe_level > 1)
-		{
-			all_spec_disable = true;
-		}
-		else
-		{
-			all_spec_disable = false;
-		}
-	}
-	else
-	{
-		spec_disable = false;
-		all_spec_disable = false;
-	}
-	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(490, 215));
-	ImGui::Begin(XorStr("##title"), (bool*)true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
-	if (ImGui::BeginTabBar(XorStr("Tab")))
-	{
-		if (ImGui::BeginTabItem(XorStr("Main")))
-		{
-			ImGui::Checkbox(XorStr("Disable with enemy spectators"), &spec_disable);
-			if (spec_disable)
-			{
-				ImGui::SameLine();
-				ImGui::Checkbox(XorStr("Disable with allied spectators"), &all_spec_disable);
-				if (all_spec_disable)
-				{
-					safe_level = 2;
-				}
-				else
-				{
-					safe_level = 1;
-				}
-			}
-			else
-			{
-				safe_level = 0;
-			}
-
-			ImGui::Checkbox(XorStr("ESP"), &esp);
-
-			ImGui::Checkbox(XorStr("AIM"), &aim_enable);
-
-			if (aim_enable)
-			{
-				ImGui::SameLine();
-				ImGui::Checkbox(XorStr("Visibility check"), &vis_check);
-				ImGui::SameLine();
-				ImGui::Checkbox(XorStr("No recoil/sway"), &aim_no_recoil);
-				if (vis_check)
-				{
-					aim = 2;
-				}
-				else
-				{
-					aim = 1;
-				}
-			}
-			else
-			{
-				aim = 0;
-			}
-
-			ImGui::Checkbox(XorStr("Glow items"), &item_glow);
-			ImGui::Checkbox(XorStr("Glow players"), &player_glow);
-			ImGui::Checkbox(XorStr("Thirdperson"), &thirdperson);
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(XorStr("Config")))
-		{
-			ImGui::Text(XorStr("Max distance:"));
-			ImGui::SliderFloat(XorStr("##1"), &max_dist, 100.0f * 40, 800.0f * 40, "%.2f");
-			ImGui::SameLine();
-			ImGui::Text("(%d meters)", (int)(max_dist / 40));
-
-			ImGui::Text(XorStr("Smooth aim value:"));
-			ImGui::SliderFloat(XorStr("##2"), &smooth, 12.0f, 150.0f, "%.2f");
-
-			ImGui::Text(XorStr("Max FOV:"));
-			ImGui::SliderFloat(XorStr("##3"), &max_fov, 5.0f, 250.0f, "%.2f");
-			
-			ImGui::Text(XorStr("Aim at (bone id):"));
-			ImGui::SliderInt(XorStr("##4"), &bone, 0, 175);
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem(XorStr("Visuals")))
-		{
-			ImGui::Text(XorStr("ESP options:"));
-			ImGui::Checkbox(XorStr("Box"), &v.box);
-			ImGui::SameLine(0, 70.0f);
-			ImGui::Checkbox(XorStr("Name"), &v.name);
-			ImGui::Checkbox(XorStr("Line"), &v.line);
-			ImGui::Checkbox(XorStr("Distance"), &v.distance);
-			ImGui::Checkbox(XorStr("Health bar"), &v.healthbar);
-			ImGui::Checkbox(XorStr("Shield bar"), &v.shieldbar);
-			ImGui::EndTabItem();
-		}
-		ImGui::EndTabBar();
-	}
-	ImGui::Text(XorStr("Overlay FPS: %.3f ms/frame (%.1f FPS)"), 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::End();
-}
-
 void Overlay::RenderInfo()
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -236,7 +109,7 @@ void Overlay::RenderInfo()
 	switch (current_cfg)
 	{
 		case BONE:
-			curEdit = "bone";
+			curEdit = "BONE";
 			curVal = bone == 12 ? "HEAD" : "BODY";
 			break;
 		case ESP:
@@ -250,13 +123,18 @@ void Overlay::RenderInfo()
 	}
 	
 	ImGui::TextColored((aim ? GREEN : RED), "%s\n", "AIM");
-	ImGui::TextColored((esp ? GREEN : RED), "%s\n", "ESP");
-	ImGui::TextColored(RED, "%s\n", curEdit);
-	ImGui::TextColored(WHITE, "%s\n", curVal);
+	ImGui::TextColored((esp ? GREEN : RED), "%s\n\n", "ESP");
+
+	ImGui::TextColored(BLUE, "%s\n", curEdit);
+	ImGui::TextColored(WHITE, "%s\n\n", curVal);
+
+	ImGui::TextColored(BLUE, "%s\n", "SPECTATORS");
+	for (int i = 0; i < specNum; i++)
+	{
+		String(ImVec(10, 120 + (20 * i)), WHITE, speclist[i]);
+    }
+
 	ImGui::SameLine();
-	/*ImGui::Text("-");
-	ImGui::SameLine();
-	ImGui::TextColored(GREEN, "%d", allied_spectators);*/
 	ImGui::End();
 }
 

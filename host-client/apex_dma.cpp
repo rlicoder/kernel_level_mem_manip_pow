@@ -89,35 +89,12 @@ void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int ind
     if(!firing_range)
         if (entity_team < 0 || entity_team>50 || entity_team == team_player) return;
 
-    if(aim==2)
+    float fov = CalculateFov(LPlayer, target);
+    if (fov < max)
     {
-        if((target.lastVisTime() > lastvis_aim[index]))
-        {
-            float fov = CalculateFov(LPlayer, target);
-            if (fov < max)
-            {
-                max = fov;
-                tmp_aimentity = target.ptr;
-            }
-        }
-        else
-        {
-            if(aimentity==target.ptr)
-            {
-                aimentity=tmp_aimentity=lastaimentity=0;
-            }
-        }
+        max = fov;
+        tmp_aimentity = target.ptr;
     }
-    else
-    {
-        float fov = CalculateFov(LPlayer, target);
-        if (fov < max)
-        {
-            max = fov;
-            tmp_aimentity = target.ptr;
-        }
-    }
-    lastvis_aim[index] = target.lastVisTime();
 }
 
 void DoActions()
@@ -427,6 +404,8 @@ static void EspLoop()
     esp_t = false;
 }
 
+speclist[50][33];
+
 static void SpecList()
 {
     while (true)
@@ -434,7 +413,7 @@ static void SpecList()
         std::map<int,bool> teamalive;
         uint64_t entitylist = g_Base + OFFSET_ENTITYLIST;
         std::set<std::string> s;
-        printf("\nList of spectators\n");
+        int cur = 0;
         for (int i = 0; i < toRead; i++)
         {
             uint64_t centity = 0;
@@ -461,13 +440,17 @@ static void SpecList()
                 target.get_name(g_Base, i-1, name);
                 for (int j = 0; j < strlen(name); j++)
                 {
-                    std::cout << (char)name[j];
+                    speclist[cur][j] = (char)name[j];
                 }
-                std::cout << std::endl;
+                cur++;
             }
         }
-        std::cout << std::endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        client.mem.Write<int>(numSpec_addr, cur);
+        for (int i = 0; i < cur; i++)
+        {
+            client_mem.WriteArray<char[33]>(speclist_addr + (33 * i), speclist[i], 33);
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 }
 
@@ -556,6 +539,10 @@ static void set_vars(uint64_t add_addr)
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*15, max_fov_addr);
     uint64_t bone_addr = 0;
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*16, bone_addr);
+    uint64_t speclist_addr = 0;
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t) * 17, speclist_addr);
+    uint64_t numSpec_addr = 0;
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t) * 18, numSpec_addr);
 
     int tmp = 0;
     client_mem.Read<int>(spec_addr, tmp);

@@ -24,12 +24,13 @@ bool headbone = false;
 int current_cfg = ESP;
 int aim_key = VK_XBUTTON1;
 bool use_nvidia = true;
+int numSpec;
 bool active = true;
 bool ready = false;
 extern visuals v;
 int spectators = 1; //write
 int allied_spectators = 1; //write
-int aim = 0; //read
+bool aim = 0; //read
 bool esp = false; //read
 int safe_level = 0; //read
 bool item_glow = false;
@@ -43,6 +44,7 @@ float max_fov = 25.0f;
 int bone = 2;
 const float max_smooth = 175;
 bool thirdperson = false;
+char[50][33] specnames;
 
 bool valid = false; //write
 bool next = false; //read write
@@ -142,6 +144,8 @@ int main(int argc, char** argv)
 	add[15] = (uintptr_t)&max_fov;
 	add[16] = (uintptr_t)&bone;
 	add[17] = (uintptr_t)&thirdperson;
+	add[18] = (uintptr_t)&specnames[0];
+	add[19] = (uintptr_t)&numSpec;
 	printf(XorStr("add offset: 0x%I64x\n"), (uint64_t)&add[0] - (uint64_t)GetModuleHandle(NULL));
 	Overlay ov1 = Overlay();
 	ov1.Start();
@@ -179,18 +183,6 @@ int main(int argc, char** argv)
 			{
 				current_cfg++;
 			}
-			switch (current_cfg)
-			{
-			case BONE:
-				std::cout << "using bone" << std::endl;
-				break;
-			case ESP:
-				std::cout << "using esp" << std::endl;
-				break;
-			case SMOOTH:
-				std::cout << "using smooth" << std::endl;
-				break;
-			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(135));
 		}
 		if (IsKeyDown(VK_F4))
@@ -211,20 +203,7 @@ int main(int argc, char** argv)
 		if (IsKeyDown(VK_F6) && k_f6 == 0)
 		{
 			k_f6 = 1;
-			switch (aim)
-			{
-			case 0:
-				aim = 1;
-				break;
-			case 1:
-				aim = 2;
-				break;
-			case 2:
-				aim = 0;
-				break;
-			default:
-				break;
-			}
+			aim = !aim;
 		}
 		else if (!IsKeyDown(VK_F6) && k_f6 == 1)
 		{
@@ -245,25 +224,20 @@ int main(int argc, char** argv)
 		{
 			switch (current_cfg)
 			{
-			case ESP:
-				if (max_dist > 100.0f * 40.0f)
-					max_dist -= 50.0f * 40.0f;
-				std::cout << "maxdist is " << max_dist << std::endl;
-				break;
-			case SMOOTH:
-				if (smooth > 25)
-					smooth -= 25;
-				std::cout << "smooth is: " << smooth << std::endl;
-				break;
-			case BONE:
-			{
-				headbone = !headbone;
-				bone = (headbone ? HEAD : BODY);
-				std::cout << "you are aiming at the " << (headbone ? "HEAD" : "BODY") << std::endl;
-				break;
-			}
-			default:
-				std::cout << "ERROR IN VKLEFT FUNC" << std::endl;
+				case ESP:
+					if (max_dist > 100.0f * 40.0f)
+						max_dist -= 50.0f * 40.0f;
+					break;
+				case SMOOTH:
+					if (smooth > 25)
+						smooth -= 25;
+					break;
+				case BONE:
+				{
+					headbone = !headbone;
+					bone = (headbone ? HEAD : BODY);
+					break;
+				}
 			}
 			
 			std::this_thread::sleep_for(std::chrono::milliseconds(135));
