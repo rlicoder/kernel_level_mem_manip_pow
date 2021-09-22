@@ -18,7 +18,7 @@ typedef struct player
 }player;
 
 const int SAFE_LEVEL_MAX = 5;
-int aim_key = VK_RBUTTON;
+int aim_key = VK_XBUTTON1;
 bool use_nvidia = true;
 bool active = true;
 bool ready = false;
@@ -93,9 +93,6 @@ void Overlay::RenderEsp()
 							DrawBox(WHITE, players[i].boxMiddle, players[i].h_y, players[i].width, players[i].height); //white if player not visible
 						}
 					}
-
-					if(v.line)
-						DrawLine(ImVec2((float)(getWidth() / 2), (float)getHeight()), ImVec2(players[i].b_x, players[i].b_y), BLUE, 1); //LINE FROM MIDDLE SCREEN
 
 					if (v.distance)
 					{

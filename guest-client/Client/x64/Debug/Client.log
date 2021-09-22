@@ -1,0 +1,9 @@
+﻿  imgui.cpp
+  imgui_draw.cpp
+  imgui_impl_dx9.cpp
+  imgui_impl_win32.cpp
+  imgui_widgets.cpp
+  overlay.cpp
+  main.cpp
+  Generating Code...
+  Client.vcxproj -> C:\Users\a\Documents\GitHub\kernel_level_mem_manip_pow\guest-client\x64\Debug\Client.exe
