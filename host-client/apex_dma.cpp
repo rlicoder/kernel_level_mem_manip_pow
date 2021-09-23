@@ -48,6 +48,9 @@ bool next = false;
 bool valid = false;
 bool lock = false;
 
+uint64_t speclist_addr = 0;
+uint64_t numSpec_addr = 0;
+
 typedef struct player
 {
     float dist = 0;
@@ -409,9 +412,9 @@ static void EspLoop()
     esp_t = false;
 }
 
-char speclist[50][33];
+specname speclist[50];
 
-static void SpecList(uintptr_t numSpec_addr, uintptr_t speclist_addr)
+static void SpecList()
 {
     while (true)
     {
@@ -430,6 +433,7 @@ static void SpecList(uintptr_t numSpec_addr, uintptr_t speclist_addr)
             int teamid = target.getTeamId();
             teamalive[teamid] |= alive;
         }
+        int c = 0;
         for (int i = 0; i < toRead; i++)
         {
             uint64_t centity = 0;
@@ -443,18 +447,18 @@ static void SpecList(uintptr_t numSpec_addr, uintptr_t speclist_addr)
             if (!alive && !teamalive[teamid])
             {
                 target.get_name(g_Base, i-1, name);
+                target.get_name(g_Base, i-1, &speclist[c++].name[0]);
                 for (int j = 0; j < strlen(name); j++)
                 {
-                    speclist[cur][j] = (char)name[j];
+                    std::cout << name[j];
+                    //speclist[cur].name[j] = (char)name[j];
                 }
+                std::cout << std::endl;
                 cur++;
             }
         }
         client_mem.Write<int>(numSpec_addr, cur);
-        for (int i = 0; i < cur; i++)
-        {
-            client_mem.WriteArray<specname>(speclist_addr + (33 * i), speclist[i], 33);
-        }
+        client_mem.WriteArray<specname>(speclist_addr, speclist, cur);
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 }
@@ -544,9 +548,7 @@ static void set_vars(uint64_t add_addr)
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*15, max_fov_addr);
     uint64_t bone_addr = 0;
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*16, bone_addr);
-    uint64_t speclist_addr = 0;
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t) * 17, speclist_addr);
-    uint64_t numSpec_addr = 0;
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t) * 18, numSpec_addr);
 
     int tmp = 0;
