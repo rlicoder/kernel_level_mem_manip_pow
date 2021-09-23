@@ -52,7 +52,7 @@ int numSpec = 0;
 bool valid = false; //write
 bool next = false; //read write
 
-uint64_t add[19];
+uint64_t add[16];
 
 bool k_f5 = 0;
 bool k_f6 = 0;
@@ -165,7 +165,6 @@ int main(int argc, char** argv)
 		
 	while (active)
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		if (IsKeyDown(VK_UP))
 		{
 			if (current_cfg != ESP)
@@ -222,8 +221,10 @@ int main(int argc, char** argv)
 					break;
 				case BONE:
 				{
-					headbone = !headbone;
-					bone = (headbone ? HEAD : BODY);
+					if (bone > 0)
+					{
+						bone--;
+					}
 					break;
 				}
 			}
@@ -248,13 +249,15 @@ int main(int argc, char** argv)
 				break;
 			case BONE:
 			{
-				headbone = !headbone;
-				bone = (headbone ? HEAD : BODY);
-				std::cout << "you are aiming at the " << (headbone ? "HEAD" : "BODY") << std::endl;
+				if (bone < 10)
+				{
+					bone++;
+				}
+				//std::cout << "you are aiming at the " << (headbone ? "HEAD" : "BODY") << std::endl;
 				break;
 			}
 			default:
-				std::cout << "ERROR IN VKLEFT FUNC" << std::endl;
+				std::cout << "ERROR IN VKRIGHT FUNC" << std::endl;
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(135));
 		}

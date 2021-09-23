@@ -113,7 +113,7 @@ void Overlay::RenderInfo()
 	{
 		case BONE:
 			curEdit = "BONE";
-			curVal = bone == HEAD ? "HEAD" : "BODY";
+			curVal = std::to_string(bone);
 			break;
 		case ESP:
 			curEdit = "ESP";
