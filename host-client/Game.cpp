@@ -7,17 +7,7 @@
 extern Memory apex_mem;
 
 extern bool firing_range;
-float smooth = 100.0f;
 bool aim_no_recoil = true;
-int bone = 2;
-
-
-std::vector<std::pair<float, int>> cfgs {
-	{10, 8},
-	{10, 8},
-	{10, 8},
-};
-
 
 std::string Entity::getName()
 {
@@ -177,8 +167,10 @@ float CalculateFov(Entity& from, Entity& target)
 	return Math::GetFov(ViewAngles, Angle);
 }
 
-QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int &safe_level)
+QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, float smooth, int bone)
 {
+    std::cout << smooth << " " << bone << std::endl;
+    std::cout << "before zoom: " << max_fov << std::endl;
 	Entity target = getEntity(t);
 	if(firing_range)
 	{
@@ -197,6 +189,7 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int &safe_
 	
 	Vector LocalCamera = from.GetCamPos();
 	Vector TargetBonePosition = target.getBonePosition(bone);
+    //std::cout << "TBP: " << TargetBonePosition.x << " " << TargetBonePosition.y << std::endl;
 	QAngle CalculatedAngles = QAngle(0, 0, 0);
 	
 	WeaponXEntity curweap = WeaponXEntity();
@@ -209,6 +202,7 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int &safe_
 	{
 		max_fov *= zoom_fov/90.0f;
 	}
+    std::cout << "after: " << max_fov << std::endl;
 
 	/*
 	//simple aim prediction
@@ -241,6 +235,8 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int &safe_
     	CalculatedAngles = Math::CalcAngle(LocalCamera, TargetBonePosition);
 	QAngle ViewAngles = from.GetViewAngles();
 	QAngle SwayAngles = from.GetSwayAngles();
+    //std::cout << "View: " << ViewAngles.x << " " << ViewAngles.y << std::endl;
+    //std::cout << "Sway: " << SwayAngles.x << " " << SwayAngles.y << std::endl;
 	//remove sway and recoil
 	if(aim_no_recoil)
 		CalculatedAngles-=SwayAngles-ViewAngles;
@@ -253,13 +249,6 @@ QAngle CalculateBestBoneAim(Entity& from, uintptr_t t, float max_fov, int &safe_
 	}
 
 	Math::NormalizeAngles(Delta);
-
-	if (safe_level >= cfgs.size())
-	{
-		safe_level = 0;
-	}
-	smooth = cfgs[safe_level].first;
-	bone = cfgs[safe_level].second;
 
     srand(time(0));
 

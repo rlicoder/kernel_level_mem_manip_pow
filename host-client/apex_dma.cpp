@@ -23,25 +23,20 @@ uintptr_t lastaimentity = 0;
 float max = 999.0f;
 float max_dist = 200.0f*40.0f;
 int team_player = 0;
-int tmp_spec = 0, spectators = 0;
-int tmp_all_spec = 0, allied_spectators = 0;
 float max_fov = 30;
 const int toRead = 100;
-int aim = false;
+bool aim = false;
 bool esp = false;
-bool item_glow = false;
-bool player_glow = false;
 extern bool aim_no_recoil;
 int safe_level = 0;
 bool aiming = false;
-extern float smooth;
-extern int bone;
+float smooth;
+int bone;
 
 bool actions_t = false;
 bool esp_t = false;
 bool aim_t = false;
 bool vars_t = false;
-bool item_t = false;
 uint64_t g_Base;
 uint64_t c_Base;
 bool next = false;
@@ -135,8 +130,6 @@ void DoActions()
             }
 
             max = 999.0f;
-            tmp_spec = 0;
-            tmp_all_spec = 0;
             tmp_aimentity = 0;
             if(firing_range)
             {
@@ -183,8 +176,6 @@ void DoActions()
 
                 }
             }
-            spectators = tmp_spec;
-            allied_spectators = tmp_all_spec;
             if(!lock)
                 aimentity = tmp_aimentity;
             else
@@ -234,9 +225,6 @@ static void EspLoop()
                     continue;
                 }
                 Vector LocalPlayerPosition = LPlayer.getPosition();
-                //printf("You  : x: %f, y: %f, z: %f\n", LocalPlayerPosition.x, LocalPlayerPosition.y, LocalPlayerPosition.z);
-                //QAngle y = LPlayer.GetViewAngles();
-                //printf("You  : x: %f, y: %f, z: %f\n", y.x, y.y, y.z);
 
                 uint64_t viewRenderer = 0;
                 apex_mem.Read<uint64_t>(g_Base + OFFSET_RENDER, viewRenderer);
@@ -255,29 +243,14 @@ static void EspLoop()
                     {
                         uint64_t centity = 0;
                         apex_mem.Read<uint64_t>( entitylist + ((uint64_t)i << 5), centity);
-                        if (centity == 0)
+                        if (centity == 0 || LocalPlayer == centity)
                         {
                             continue;
                         }		
 
-                        if (LocalPlayer == centity)
-                        {
-                            continue;
-                        }
-
                         Entity Target = getEntity(centity);
 
-                        if (!Target.isDummy())
-                        {
-                            continue;
-                        }
-
-                        if (!Target.isPlayer())
-                        {
-                            continue;
-                        }
-
-                        if (!Target.isAlive())
+                        if (!Target.isDummy() || !Target.isPlayer() || !Target.isAlive())
                         {
                             continue;
                         }
@@ -319,36 +292,25 @@ static void EspLoop()
                             };
                             Target.get_name(g_Base, i-1, &players[c].name[0]);
                             lastvis_esp[c] = Target.lastVisTime();
-                            valid = true;
                             c++;
+                            valid = true;
                         }
                     }
                 }	
                 else
                 {
-
                     for (int i = 0; i < toRead; i++)
                     {
                         uint64_t centity = 0;
                         apex_mem.Read<uint64_t>( entitylist + ((uint64_t)i << 5), centity);
-                        if (centity == 0)
-                        {
-                            continue;
-                        }
-
-                        if (LocalPlayer == centity)
+                        if (centity == 0 || LocalPlayer == centity)
                         {
                             continue;
                         }
 
                         Entity Target = getEntity(centity);
 
-                        if (!Target.isPlayer())
-                        {
-                            continue;
-                        }
-
-                        if (!Target.isAlive())
+                        if (!Target.isPlayer() || !Target.isAlive())
                         {
                             continue;
                         }
@@ -479,7 +441,7 @@ static void AimbotLoop()
                 apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
                 if (LocalPlayer == 0) continue;
                 Entity LPlayer = getEntity(LocalPlayer);
-                QAngle Angles = CalculateBestBoneAim(LPlayer, aimentity, max_fov, safe_level);
+                QAngle Angles = CalculateBestBoneAim(LPlayer, aimentity, max_fov, smooth, bone);
                 if (Angles.x == 0 && Angles.y == 0)
                 {
                     lock=false;
@@ -494,7 +456,6 @@ static void AimbotLoop()
                 {
                     continue;
                 }
-                //printf("Enemy: x: %f, y: %f, z: %f\n", Angles.x, Angles.y, Angles.z);
                 LPlayer.SetViewAngles(Angles);
             }
         }
@@ -509,41 +470,34 @@ static void set_vars(uint64_t add_addr)
     //Get addresses of client vars
     uint64_t spec_addr = 0;
     client_mem.Read<uint64_t>(add_addr, spec_addr);
-    uint64_t all_spec_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t), all_spec_addr);
     uint64_t aim_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*2, aim_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*1, aim_addr);
     uint64_t esp_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*3, esp_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*2, esp_addr);
     uint64_t safe_lev_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*4, safe_lev_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*3, safe_lev_addr);
     uint64_t aiming_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*5, aiming_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*4, aiming_addr);
     uint64_t g_Base_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*6, g_Base_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*5, g_Base_addr);
     uint64_t next_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*7, next_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*6, next_addr);
     uint64_t player_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*8, player_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*7, player_addr);
     uint64_t valid_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*9, valid_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*8, valid_addr);
     uint64_t max_dist_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*10, max_dist_addr);
-    uint64_t item_glow_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*11, item_glow_addr);
-    uint64_t player_glow_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*12, player_glow_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*9, max_dist_addr);
     uint64_t aim_no_recoil_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*13, aim_no_recoil_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*10, aim_no_recoil_addr);
     uint64_t smooth_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*14, smooth_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*11, smooth_addr);
     uint64_t max_fov_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*15, max_fov_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*12, max_fov_addr);
     uint64_t bone_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*16, bone_addr);
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*17, speclist_addr);
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*18, numSpec_addr);
-    std::cout << numSpec_addr << std::endl;
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*13, bone_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*14, speclist_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*15, numSpec_addr);
 
     int tmp = 0;
     client_mem.Read<int>(spec_addr, tmp);
@@ -565,20 +519,20 @@ static void set_vars(uint64_t add_addr)
         while(c_Base!=0 && g_Base!=0)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            client_mem.Write<int>(all_spec_addr, allied_spectators);
-            client_mem.Write<int>(spec_addr, spectators);
             client_mem.Write<uint64_t>(g_Base_addr, g_Base);
+            //lmao...
+            uint64_t a = 0;
+            client_mem.Write<uint64_t>(spec_addr, a);
 
-            client_mem.Read<int>(aim_addr, aim);
+            client_mem.Read<bool>(aim_addr, aim);
             client_mem.Read<bool>(esp_addr, esp);
             client_mem.Read<int>(safe_lev_addr, safe_level);
             client_mem.Read<bool>(aiming_addr, aiming);
             client_mem.Read<float>(max_dist_addr, max_dist);
-            client_mem.Read<bool>(item_glow_addr, item_glow);
-            client_mem.Read<bool>(player_glow_addr, player_glow);
             client_mem.Read<bool>(aim_no_recoil_addr, aim_no_recoil);
             client_mem.Read<float>(smooth_addr, smooth);
-            client_mem.Read<float>(max_fov_addr, max_fov);
+            //client_mem.Read<float>(max_fov_addr, max_fov);
+
             client_mem.Read<int>(bone_addr, bone);
 
             if(esp && next)
