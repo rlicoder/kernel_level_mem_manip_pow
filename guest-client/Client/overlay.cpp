@@ -23,13 +23,16 @@ bool k_leftclick = false;
 bool k_ins = false;
 bool show_menu = false;
 
-extern int numSpec;
-extern char specnames[50][33];
+typedef struct specname
+{
+	char name[33] = { 0 };
+}specname;
+extern specname specnames[100];
 
 visuals v;
 
 enum cfg { ESP, SMOOTH, BONE };
-enum BONES { BODY = 2, HEAD = 12 };
+enum BONES { BODY = 2, HEAD = 10 };
 
 extern bool IsKeyDown(int vk);
 
@@ -88,7 +91,7 @@ void ResetDevice();
 void Overlay::RenderInfo()
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(100, 200));
+	ImGui::SetNextWindowSize(ImVec2(150, 200 + (20 * numSpec)));
 	ImGui::Begin(XorStr("##info"), (bool*)true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
 	switch (safe_level)
 	{
@@ -110,7 +113,7 @@ void Overlay::RenderInfo()
 	{
 		case BONE:
 			curEdit = "BONE";
-			curVal = bone == 12 ? "HEAD" : "BODY";
+			curVal = bone == HEAD ? "HEAD" : "BODY";
 			break;
 		case ESP:
 			curEdit = "ESP";
@@ -128,10 +131,10 @@ void Overlay::RenderInfo()
 	ImGui::TextColored(BLUE, "%s\n", curEdit);
 	ImGui::TextColored(WHITE, "%s\n\n", curVal);
 
-	ImGui::TextColored(BLUE, "%s\n", "SPECTATORS");
+	ImGui::TextColored((numSpec == 0 ? GREEN : RED), "%s: %d\n", "SPECTATORS", numSpec);
 	for (int i = 0; i < numSpec; i++)
 	{
-		String(ImVec2(10, 120 + (20 * i)), WHITE, specnames[i]);
+		String(ImVec2(10, 120 + (20 * i)), WHITE, specnames[i].name);
     }
 
 	ImGui::SameLine();

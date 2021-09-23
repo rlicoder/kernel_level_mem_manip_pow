@@ -19,7 +19,7 @@ typedef struct player
 }player;
 
 enum cfg {ESP, SMOOTH, BONE};
-enum BONES {BODY = 2, HEAD = 12};
+enum BONES {BODY = 2, HEAD = 10};
 bool headbone = false;
 int current_cfg = ESP;
 int aim_key = VK_XBUTTON1;
@@ -29,7 +29,7 @@ bool ready = false;
 extern visuals v;
 int spectators = 1; //write
 int allied_spectators = 1; //write
-bool aim = 0; //read
+bool aim = false; //read
 bool esp = false; //read
 int safe_level = 0; //read
 bool item_glow = false;
@@ -43,13 +43,17 @@ float max_fov = 25.0f;
 int bone = 2;
 const float max_smooth = 175;
 bool thirdperson = false;
-char specnames[50][33];
+typedef struct specname
+{
+	char name[33] = { 0 };
+}specname;
+specname specnames[100];
 int numSpec = 0;
 
 bool valid = false; //write
 bool next = false; //read write
 
-uint64_t add[18];
+uint64_t add[19];
 
 bool k_f5 = 0;
 bool k_f6 = 0;
@@ -143,9 +147,9 @@ int main(int argc, char** argv)
 	add[14] = (uintptr_t)&smooth;
 	add[15] = (uintptr_t)&max_fov;
 	add[16] = (uintptr_t)&bone;
-	add[17] = (uintptr_t)&thirdperson;
-	add[18] = (uintptr_t)&specnames[0];
-	add[19] = (uintptr_t)&numSpec;
+	add[17] = (uintptr_t)&specnames[0];
+	add[18] = (uintptr_t)&numSpec;
+	std::cout << &numSpec << std::endl;
 	printf(XorStr("add offset: 0x%I64x\n"), (uint64_t)&add[0] - (uint64_t)GetModuleHandle(NULL));
 	Overlay ov1 = Overlay();
 	ov1.Start();
