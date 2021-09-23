@@ -412,7 +412,7 @@ static void EspLoop()
     esp_t = false;
 }
 
-specname speclist[50];
+specname speclist[100];
 
 static void SpecList()
 {
@@ -446,14 +446,7 @@ static void SpecList()
             char name[33];
             if (!alive && !teamalive[teamid])
             {
-                target.get_name(g_Base, i-1, name);
                 target.get_name(g_Base, i-1, &speclist[c++].name[0]);
-                for (int j = 0; j < strlen(name); j++)
-                {
-                    std::cout << name[j];
-                    //speclist[cur].name[j] = (char)name[j];
-                }
-                std::cout << std::endl;
                 cur++;
             }
         }
@@ -548,8 +541,9 @@ static void set_vars(uint64_t add_addr)
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*15, max_fov_addr);
     uint64_t bone_addr = 0;
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*16, bone_addr);
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t) * 17, speclist_addr);
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t) * 18, numSpec_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*17, speclist_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*18, numSpec_addr);
+    std::cout << numSpec_addr << std::endl;
 
     int tmp = 0;
     client_mem.Read<int>(spec_addr, tmp);
