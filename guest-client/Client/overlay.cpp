@@ -32,7 +32,7 @@ extern specname specnames[100];
 visuals v;
 
 enum cfg { ESP, SMOOTH, BONE };
-enum BONES { BODY = 2, HEAD = 10 };
+enum BONES { BODY = 2, HEAD = 8 };
 
 extern bool IsKeyDown(int vk);
 

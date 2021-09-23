@@ -19,7 +19,7 @@ typedef struct player
 }player;
 
 enum cfg {ESP, SMOOTH, BONE};
-enum BONES {BODY = 2, HEAD = 10};
+enum BONES {BODY = 2, HEAD = 8};
 bool headbone = false;
 int current_cfg = ESP;
 int aim_key = VK_XBUTTON1;
@@ -28,7 +28,6 @@ bool active = true;
 bool ready = false;
 extern visuals v;
 int spectators = 1; //write
-int allied_spectators = 1; //write
 bool aim = false; //read
 bool esp = false; //read
 int safe_level = 0; //read
@@ -58,7 +57,6 @@ uint64_t add[19];
 bool k_f5 = 0;
 bool k_f6 = 0;
 bool k_f7 = 0;
-bool k_f8 = 0;
 
 bool IsKeyDown(int vk)
 {
@@ -131,25 +129,21 @@ void Overlay::RenderEsp()
 int main(int argc, char** argv)
 {
 	add[0] = (uintptr_t)&spectators;
-	add[1] = (uintptr_t)&allied_spectators;
-	add[2] = (uintptr_t)&aim;
-	add[3] = (uintptr_t)&esp;
-	add[4] = (uintptr_t)&safe_level;
-	add[5] = (uintptr_t)&aiming;
-	add[6] = (uintptr_t)&g_Base;
-	add[7] = (uintptr_t)&next;
-	add[8] = (uintptr_t)&players[0];
-	add[9] = (uintptr_t)&valid;
-	add[10] = (uintptr_t)&max_dist;
-	add[11] = (uintptr_t)&item_glow;
-	add[12] = (uintptr_t)&player_glow;
-	add[13] = (uintptr_t)&aim_no_recoil;
-	add[14] = (uintptr_t)&smooth;
-	add[15] = (uintptr_t)&max_fov;
-	add[16] = (uintptr_t)&bone;
-	add[17] = (uintptr_t)&specnames[0];
-	add[18] = (uintptr_t)&numSpec;
-	std::cout << &numSpec << std::endl;
+	add[1] = (uintptr_t)&aim;
+	add[2] = (uintptr_t)&esp;
+	add[3] = (uintptr_t)&safe_level;
+	add[4] = (uintptr_t)&aiming;
+	add[5] = (uintptr_t)&g_Base;
+	add[6] = (uintptr_t)&next;
+	add[7] = (uintptr_t)&players[0];
+	add[8] = (uintptr_t)&valid;
+	add[9] = (uintptr_t)&max_dist;
+	add[10] = (uintptr_t)&aim_no_recoil;
+	add[11] = (uintptr_t)&smooth;
+	add[12] = (uintptr_t)&max_fov;
+	add[13] = (uintptr_t)&bone;
+	add[14] = (uintptr_t)&specnames[0];
+	add[15] = (uintptr_t)&numSpec;
 	printf(XorStr("add offset: 0x%I64x\n"), (uint64_t)&add[0] - (uint64_t)GetModuleHandle(NULL));
 	Overlay ov1 = Overlay();
 	ov1.Start();
@@ -212,16 +206,6 @@ int main(int argc, char** argv)
 		else if (!IsKeyDown(VK_F6) && k_f6 == 1)
 		{
 			k_f6 = 0;
-		}
-
-		if (IsKeyDown(VK_F8) && k_f8 == 0)
-		{
-			k_f8 = 1;
-			item_glow = !item_glow;
-		}
-		else if (!IsKeyDown(VK_F8) && k_f8 == 1)
-		{
-			k_f8 = 0;
 		}
 
 		if (IsKeyDown(VK_LEFT))
