@@ -20,8 +20,8 @@ typedef struct player
 
 //put your defaults here
 //the first number in max dist is the # of meters you want to see ahead
-//the 40 multiplier is the units to meters conversion
-float max_dist = 200.0f * 40.0f; //read
+//the 39.62 multiplier is the units to meters conversion
+float max_dist = 200.0f * 39.62f; //read
 float smooth = 50.0f;
 float max_fov = 25.0f;
 int bone = 2;
