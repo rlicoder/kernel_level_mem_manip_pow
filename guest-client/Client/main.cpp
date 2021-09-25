@@ -18,6 +18,14 @@ typedef struct player
 	char name[33] = { 0 };
 }player;
 
+//put your defaults here
+//the first number in max dist is the # of meters you want to see ahead
+//the 40 multiplier is the units to meters conversion
+float max_dist = 200.0f * 40.0f; //read
+float smooth = 50.0f;
+float max_fov = 25.0f;
+int bone = 2;
+
 enum cfg {ESP, SMOOTH, BONE};
 enum BONES {BODY = 2, HEAD = 8};
 bool headbone = false;
@@ -36,10 +44,6 @@ bool player_glow = false;
 bool aim_no_recoil = true;
 bool aiming = false; //read
 uint64_t g_Base = 0; //write
-float max_dist = 200.0f*40.0f; //read
-float smooth = 50.0f;
-float max_fov = 25.0f;
-int bone = 2;
 const float max_smooth = 175;
 bool thirdperson = false;
 typedef struct specname
@@ -237,27 +241,22 @@ int main(int argc, char** argv)
 			
 			switch (current_cfg)
 			{
-			case ESP:
-				if (max_dist < 800.0f * 40.0f)
-					max_dist += 50.0f * 40.0f;
-				std::cout << "maxdist is " << max_dist << std::endl;
-				break;
-			case SMOOTH:
-				if (smooth < max_smooth)
-					smooth += 25;
-				std::cout << "smooth is: " << smooth << std::endl;
-				break;
-			case BONE:
-			{
-				if (bone < 10)
+				case ESP:
+					if (max_dist < 800.0f * 40.0f)
+						max_dist += 50.0f * 40.0f;
+					break;
+				case SMOOTH:
+					if (smooth < max_smooth)
+						smooth += 25;
+					break;
+				case BONE:
 				{
-					bone++;
+					if (bone < 10)
+					{
+						bone++;
+					}
+					break;
 				}
-				//std::cout << "you are aiming at the " << (headbone ? "HEAD" : "BODY") << std::endl;
-				break;
-			}
-			default:
-				std::cout << "ERROR IN VKRIGHT FUNC" << std::endl;
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(135));
 		}
