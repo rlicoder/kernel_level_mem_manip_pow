@@ -15,6 +15,9 @@
 Memory apex_mem;
 Memory client_mem;
 
+const int client_screen_width = 1920;
+const int client_screen_height = 1080;
+
 bool firing_range = false;
 bool active = true;
 uintptr_t aimentity = 0;
@@ -264,12 +267,12 @@ static void EspLoop()
                         }
 
                         Vector bs = Vector();
-                        WorldToScreen(EntityPosition, m.matrix, 1920, 1080, bs);
+                        WorldToScreen(EntityPosition, m.matrix, client_screen_width, client_screen_height, bs);
                         if (bs.x > 0 && bs.y > 0)
                         {
                             Vector hs = Vector();
                             Vector HeadPosition = Target.getBonePosition(8);
-                            WorldToScreen(HeadPosition, m.matrix, 1920, 1080, hs);
+                            WorldToScreen(HeadPosition, m.matrix, client_screen_width, client_screen_height, hs);
                             float height = abs(abs(hs.y) - abs(bs.y));
                             float width = height / 2.0f;
                             float boxMiddle = bs.x - (width / 2.0f);
@@ -329,12 +332,12 @@ static void EspLoop()
                         }
 
                         Vector bs = Vector();
-                        WorldToScreen(EntityPosition, m.matrix, 1920, 1080, bs);
+                        WorldToScreen(EntityPosition, m.matrix, client_screen_width, client_screen_height, bs);
                         if (bs.x > 0 && bs.y > 0)
                         {
                             Vector hs = Vector();
                             Vector HeadPosition = Target.getBonePosition(8);
-                            WorldToScreen(HeadPosition, m.matrix, 1920, 1080, hs);
+                            WorldToScreen(HeadPosition, m.matrix, client_screen_width, client_screen_height, hs);
                             float height = abs(abs(hs.y) - abs(bs.y));
                             float width = height / 2.0f;
                             float boxMiddle = bs.x - (width / 2.0f);
