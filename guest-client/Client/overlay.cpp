@@ -128,7 +128,7 @@ void Overlay::RenderInfo()
 	ImGui::TextColored((aim ? GREEN : RED), "%s\n", "AIM");
 	ImGui::TextColored((esp ? GREEN : RED), "%s\n\n", "ESP");
 
-	ImGui::TextColored(BLUE, "%s\n", curEdit);
+	ImGui::TextColored(YELLOW, "%s\n", curEdit);
 	ImGui::TextColored(WHITE, "%s\n\n", curVal);
 
 	ImGui::TextColored((numSpec == 0 ? GREEN : RED), "%s: %d\n", "SPECTATORS", numSpec);
