@@ -572,7 +572,7 @@ int main(int argc, char *argv[])
     //const char* ap_proc = "EasyAntiCheat_launcher.exe";
 
     //Client "add" offset
-    uint64_t add_off = 0x2f880;
+    uint64_t add_off = 0x2e880;
 
     std::thread aimbot_thr;
     std::thread esp_thr;
