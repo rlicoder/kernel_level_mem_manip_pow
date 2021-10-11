@@ -17,6 +17,7 @@ extern int numSpec;
 extern int current_cfg;
 extern float max_fov;
 extern int bone;
+extern std::string bone_name;
 extern bool thirdperson;
 extern int bone_idx;
 int width;
@@ -24,15 +25,6 @@ int height;
 bool k_leftclick = false;
 bool k_ins = false;
 bool show_menu = false;
-
-std::vector<std::pair<int, std::string>> bone_names = {
-	{1, "HIP"},
-	{2, "STOMACH" },
-	{3, "LOWER CHEST" },
-	{5, "COLLARBONE" },
-	{6, "CHIN" },
-	{8, "HEAD" }
-};
 
 typedef struct specname
 {
@@ -123,14 +115,7 @@ void Overlay::RenderInfo()
 	{
 		case BONE:
 			curEdit = "BONE";
-			curVal = "error";
-			for (int i = 0; i < bone_names.size(); i++)
-			{
-				if (bone_names[i].first == bone)
-				{
-					curVal = bone_names[i].second;
-				}
-			}
+			curVal = bone_name;
 			break;
 		case ESP:
 			curEdit = "ESP";

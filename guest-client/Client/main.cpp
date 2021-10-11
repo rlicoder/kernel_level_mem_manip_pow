@@ -33,6 +33,7 @@ float max_fov = 25.0f;
 enum cfg {ESP, SMOOTH, BONE};
 
 int bone = 3;
+std::string bone_name;
 struct bone_struct
 {
 	int bone_id;
@@ -253,6 +254,7 @@ int main(int argc, char** argv)
 					{
 						bone_idx--;
 						bone = bone_vec[bone_idx].bone_id;
+						bone_name = bone_vec[bone_idx].bone_name;
 					}
 					break;
 				}
@@ -280,6 +282,7 @@ int main(int argc, char** argv)
 					{
 						bone_idx++;
 						bone = bone_vec[bone_idx].bone_id;
+						bone_name = bone_vec[bone_idx].bone_name;
 					}
 					break;
 				}
