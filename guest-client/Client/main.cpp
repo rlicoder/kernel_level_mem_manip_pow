@@ -1,5 +1,5 @@
 #include "main.h"
-#include <map>
+#include <vector>
 
 typedef struct player
 {
@@ -21,14 +21,38 @@ typedef struct player
 //put your defaults here
 //the first number in max dist is the # of meters you want to see ahead
 //the 39.62 multiplier is the units to meters conversion
-float max_dist = 200.0f * 39.62f; //read
-float smooth = 50.0f;
+
+float max_dist = 150.0f * 39.62f; //read
+float smooth = 51.0f; //starting smooth value
+float smooth_inc = 25.0f; //smooth increment
+float smooth_min = 1.0f;
+const float max_smooth = 175.0f;
+
 float max_fov = 25.0f;
-int bone = 2;
 
 enum cfg {ESP, SMOOTH, BONE};
-enum BONES {BODY = 2, HEAD = 8};
-bool headbone = false;
+
+int bone = 3;
+struct bone_struct
+{
+	int bone_id;
+	std::string bone_name;
+	bone_struct(int id, std::string name)
+	{
+		bone_id = id;
+		bone_name = name;
+	};
+};
+std::vector<bone_struct> bone_vec = {
+	{1, "HIP"},
+	{2, "STOMACH"},
+	{3, "LOWER CHEST"},
+	{5, "COLLARBONE"},
+	{6, "CHIN"},
+	{8, "HEAD"}
+};
+int bone_idx = 0;
+
 int current_cfg = ESP;
 int aim_key = VK_XBUTTON1;
 bool use_nvidia = true;
@@ -44,7 +68,7 @@ bool player_glow = false;
 bool aim_no_recoil = true;
 bool aiming = false; //read
 uint64_t g_Base = 0; //write
-const float max_smooth = 175;
+
 bool thirdperson = false;
 typedef struct specname
 {
@@ -220,14 +244,15 @@ int main(int argc, char** argv)
 						max_dist -= 50.0f * 40.0f;
 					break;
 				case SMOOTH:
-					if (smooth > 25)
-						smooth -= 25;
+					if (smooth > smooth_min)
+						smooth -= smooth_inc;
 					break;
 				case BONE:
 				{
 					if (bone > 0)
 					{
-						bone--;
+						bone_idx--;
+						bone = bone_vec[bone_idx].bone_id;
 					}
 					break;
 				}
@@ -247,13 +272,14 @@ int main(int argc, char** argv)
 					break;
 				case SMOOTH:
 					if (smooth < max_smooth)
-						smooth += 25;
+						smooth += smooth_inc;
 					break;
 				case BONE:
 				{
-					if (bone < 10)
+					if (bone_idx < bone_vec.size()-1)
 					{
-						bone++;
+						bone_idx++;
+						bone = bone_vec[bone_idx].bone_id;
 					}
 					break;
 				}

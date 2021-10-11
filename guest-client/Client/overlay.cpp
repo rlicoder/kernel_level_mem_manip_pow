@@ -1,4 +1,5 @@
 #include "overlay.h"
+#include <utility>
 
 extern bool aim;
 extern bool esp;
@@ -17,11 +18,21 @@ extern int current_cfg;
 extern float max_fov;
 extern int bone;
 extern bool thirdperson;
+extern int bone_idx;
 int width;
 int height;
 bool k_leftclick = false;
 bool k_ins = false;
 bool show_menu = false;
+
+std::vector<std::pair<int, std::string>> bone_names = {
+	{1, "HIP"},
+	{2, "STOMACH" },
+	{3, "LOWER CHEST" },
+	{5, "COLLARBONE" },
+	{6, "CHIN" },
+	{8, "HEAD" }
+};
 
 typedef struct specname
 {
@@ -32,7 +43,6 @@ extern specname specnames[100];
 visuals v;
 
 enum cfg { ESP, SMOOTH, BONE };
-enum BONES { BODY = 2, HEAD = 8 };
 
 extern bool IsKeyDown(int vk);
 
@@ -113,7 +123,14 @@ void Overlay::RenderInfo()
 	{
 		case BONE:
 			curEdit = "BONE";
-			curVal = std::to_string(bone);
+			curVal = "error";
+			for (int i = 0; i < bone_names.size(); i++)
+			{
+				if (bone_names[i].first == bone)
+				{
+					curVal = bone_names[i].second;
+				}
+			}
 			break;
 		case ESP:
 			curEdit = "ESP";
