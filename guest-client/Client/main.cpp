@@ -33,7 +33,7 @@ float max_fov = 25.0f;
 enum cfg {ESP, SMOOTH, BONE};
 
 int bone = 3;
-std::string bone_name;
+std::string bone_name = "LOWER CHEST";
 struct bone_struct
 {
 	int bone_id;
@@ -250,7 +250,7 @@ int main(int argc, char** argv)
 					break;
 				case BONE:
 				{
-					if (bone > 0)
+					if (bone_idx > 0)
 					{
 						bone_idx--;
 						bone = bone_vec[bone_idx].bone_id;
