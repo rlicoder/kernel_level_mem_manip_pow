@@ -15,8 +15,7 @@ extern float max_dist;
 extern float smooth;
 extern int numSpec;
 extern int current_cfg;
-extern float max_fov;
-extern int bone;
+extern float fov;
 extern std::string bone_name;
 extern bool thirdperson;
 extern int bone_idx;
@@ -34,7 +33,7 @@ extern specname specnames[100];
 
 visuals v;
 
-enum cfg { ESP, SMOOTH, BONE };
+enum cfg { ESP, SMOOTH, BONE, FOV };
 
 extern bool IsKeyDown(int vk);
 
@@ -113,20 +112,24 @@ void Overlay::RenderInfo()
 	std::string curVal;
 	switch (current_cfg)
 	{
-		case BONE:
-			curEdit = "BONE";
-			curVal = bone_name;
-			break;
-		case ESP:
-			curEdit = "ESP";
-			curVal = std::to_string(max_dist / 39.62);
-			break;
-		case SMOOTH:
-			curEdit = "SMOOTH";
-			curVal = std::to_string(smooth);
-			break;
+	case BONE:
+		curEdit = "BONE";
+		curVal = bone_name;
+		break;
+	case ESP:
+		curEdit = "ESP";
+		curVal = std::to_string(max_dist / 39.62);
+		break;
+	case SMOOTH:
+		curEdit = "SMOOTH";
+		curVal = std::to_string(smooth);
+		break;
+	case FOV:
+		curEdit = "FOV";
+		curVal = std::to_string(fov);
+		break;
 	}
-	
+
 	ImGui::TextColored((aim ? GREEN : RED), "%s\n", "AIM");
 	ImGui::TextColored((esp ? GREEN : RED), "%s\n\n", "ESP");
 
@@ -137,7 +140,7 @@ void Overlay::RenderInfo()
 	for (int i = 0; i < numSpec; i++)
 	{
 		String(ImVec2(10, 120 + (20 * i)), WHITE, specnames[i].name);
-    }
+	}
 
 	ImGui::SameLine();
 	ImGui::End();
@@ -173,7 +176,7 @@ DWORD Overlay::CreateOverlay()
 	HDC hDC = ::GetWindowDC(NULL);
 	width = ::GetDeviceCaps(hDC, HORZRES);
 	height = ::GetDeviceCaps(hDC, VERTRES);
-		
+
 	running = true;
 
 	// Initialize Direct3D
@@ -259,10 +262,10 @@ DWORD Overlay::CreateOverlay()
 			k_ins = true;
 		}
 		else if (!IsKeyDown(VK_INSERT) && k_ins)
-		{	
+		{
 			k_ins = false;
 		}
-		
+
 		RenderInfo();
 		RenderEsp();
 		// Rendering
@@ -397,6 +400,6 @@ void Overlay::ProgressBar(float x, float y, float w, float h, int value, int v_m
 		25,
 		255
 	);
-	
+
 	RectFilled(x, y, x + w, y + ((h / float(v_max)) * (float)value), barColor, 0.0f, 0);
 }

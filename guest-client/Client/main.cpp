@@ -21,18 +21,20 @@ typedef struct player
 //put your defaults here
 //the first number in max dist is the # of meters you want to see ahead
 //the 39.62 multiplier is the units to meters conversion
-
 float max_dist = 150.0f * 39.62f; //read
-float smooth = 51.0f; //starting smooth value
 float smooth_inc = 25.0f; //smooth increment
-float smooth_min = 1.0f;
+float smooth_min = 10.0f;
+float smooth = smooth_min + 2 * smooth_inc; //starting smooth value
 const float max_smooth = 175.0f;
 
-float max_fov = 25.0f;
-
-enum cfg {ESP, SMOOTH, BONE};
+float max_fov = 90.0f;
+float fov_inc = 5.0f;
+float min_fov = 5.0f;
+float fov = min_fov + 4 * fov_inc;
 
 int bone = 3;
+
+enum cfg { ESP, SMOOTH, BONE, FOV };
 std::string bone_name = "LOWER CHEST";
 struct bone_struct
 {
@@ -140,16 +142,16 @@ void Overlay::RenderEsp()
 							String(ImVec2(players[i].boxMiddle, (players[i].b_y + 1)), GREEN, distance.c_str());  //DISTANCE
 					}
 
-					if(v.healthbar)
+					if (v.healthbar)
 						ProgressBar((players[i].b_x - (players[i].width / 2.0f) - 4), (players[i].b_y - players[i].height), 3, players[i].height, players[i].health, 100); //health bar
 					if (v.shieldbar)
 						ProgressBar((players[i].b_x + (players[i].width / 2.0f) + 1), (players[i].b_y - players[i].height), 3, players[i].height, players[i].shield, 125); //shield bar
 
-					if(v.name)
+					if (v.name)
 						String(ImVec2(players[i].boxMiddle, (players[i].b_y - players[i].height - 15)), WHITE, players[i].name);
 				}
 			}
-			
+
 			ImGui::End();
 		}
 	}
@@ -169,7 +171,7 @@ int main(int argc, char** argv)
 	add[9] = (uintptr_t)&max_dist;
 	add[10] = (uintptr_t)&aim_no_recoil;
 	add[11] = (uintptr_t)&smooth;
-	add[12] = (uintptr_t)&max_fov;
+	add[12] = (uintptr_t)&fov;
 	add[13] = (uintptr_t)&bone;
 	add[14] = (uintptr_t)&specnames[0];
 	add[15] = (uintptr_t)&numSpec;
@@ -191,7 +193,7 @@ int main(int argc, char** argv)
 		ready = true;
 		printf(XorStr("Ready\n"));
 	}
-		
+
 	while (active)
 	{
 		if (IsKeyDown(VK_UP))
@@ -200,12 +202,12 @@ int main(int argc, char** argv)
 			{
 				current_cfg--;
 			}
-			
+
 			std::this_thread::sleep_for(std::chrono::milliseconds(135));
 		}
 		if (IsKeyDown(VK_DOWN))
 		{
-			if (current_cfg != BONE)
+			if (current_cfg != FOV)
 			{
 				current_cfg++;
 			}
@@ -240,52 +242,87 @@ int main(int argc, char** argv)
 		{
 			switch (current_cfg)
 			{
-				case ESP:
-					if (max_dist > 100.0f * 40.0f)
-						max_dist -= 50.0f * 40.0f;
-					break;
-				case SMOOTH:
-					if (smooth > smooth_min)
-						smooth -= smooth_inc;
-					break;
-				case BONE:
-				{
-					if (bone_idx > 0)
-					{
-						bone_idx--;
-						bone = bone_vec[bone_idx].bone_id;
-						bone_name = bone_vec[bone_idx].bone_name;
-					}
-					break;
-				}
+			case ESP:
+			{
+				if (max_dist > 100.0f * 40.0f)
+					max_dist -= 50.0f * 40.0f;
+				break;
 			}
-			
+			case SMOOTH:
+			{
+				if (smooth > smooth_min)
+					smooth -= smooth_inc;
+				break;
+			}
+			case BONE:
+			{
+				if (bone_idx > 0)
+				{
+					bone_idx--;
+					bone = bone_vec[bone_idx].bone_id;
+					std::cout << bone << std::endl;
+					bone_name = bone_vec[bone_idx].bone_name;
+				}
+				break;
+			}
+			case FOV:
+			{
+				if (fov > min_fov)
+				{
+					fov -= fov_inc;
+				}
+				break;
+			}
+			default:
+			{
+				std::cout << "ERR in left arrow" << std::endl;
+			}
+
+			}
+
 			std::this_thread::sleep_for(std::chrono::milliseconds(135));
 		}
 
 		if (IsKeyDown(VK_RIGHT))
 		{
-			
 			switch (current_cfg)
 			{
-				case ESP:
-					if (max_dist < 800.0f * 40.0f)
-						max_dist += 50.0f * 40.0f;
-					break;
-				case SMOOTH:
-					if (smooth < max_smooth)
-						smooth += smooth_inc;
-					break;
-				case BONE:
+			case ESP:
+			{
+				if (max_dist < 800.0f * 40.0f)
+					max_dist += 50.0f * 40.0f;
+				break;
+			}
+			case SMOOTH:
+			{
+				if (smooth < max_smooth)
+					smooth += smooth_inc;
+				break;
+			}
+			case BONE:
+			{
+				if (bone_idx < bone_vec.size() - 1)
 				{
-					if (bone_idx < bone_vec.size()-1)
-					{
-						bone_idx++;
-						bone = bone_vec[bone_idx].bone_id;
-						bone_name = bone_vec[bone_idx].bone_name;
-					}
-					break;
+					bone_idx++;
+					bone = bone_vec[bone_idx].bone_id;
+					std::cout << bone << std::endl;
+					bone_name = bone_vec[bone_idx].bone_name;
 				}
+				break;
+			}
+			case FOV:
+			{
+				if (fov < max_fov)
+				{
+					fov += fov_inc;
+				}
+				break;
+			}
+			default:
+			{
+				std::cout << "ERR in right arrow" << std::endl;
+			}
+
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(135));
 		}
@@ -297,7 +334,7 @@ int main(int argc, char** argv)
 	}
 	ready = false;
 	ov1.Clear();
-	if(!use_nvidia)
+	if (!use_nvidia)
 		system(XorStr("taskkill /F /T /IM overlay_ap.exe")); //custom overlay process name
 	return 0;
 }
