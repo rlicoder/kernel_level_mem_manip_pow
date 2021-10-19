@@ -15,8 +15,7 @@ extern float smooth;
 extern int numSpec;
 extern int current_cfg;
 extern float fov;
-extern std::string bone_name;
-extern bool thirdperson;
+extern int bone;
 int width;
 int height;
 bool k_leftclick = false;
@@ -112,7 +111,7 @@ void Overlay::RenderInfo()
 	{
 		case BONE:
 			curEdit = "BONE";
-			curVal = bone_name;
+			curVal = std::to_string(bone);
 			break;
 		case ESP:
 			curEdit = "ESP";

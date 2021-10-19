@@ -32,28 +32,8 @@ float fov_inc = 5.0f;
 float min_fov = 5.0f;
 float fov = min_fov + 4 * fov_inc;
 
-int bone = 0;
-int bone_idx = 1;
+int bone = 3;
 enum cfg { ESP, SMOOTH, BONE, FOV };
-std::string bone_name = "STOMACH";
-struct bone_struct
-{
-	int bone_id;
-	std::string bone_name;
-	bone_struct(int id, std::string name)
-	{
-		bone_id = id;
-		bone_name = name;
-	};
-};
-std::vector<bone_struct> bone_vec = {
-	{1, "HIP"},
-	{2, "STOMACH"},
-	{3, "LOWER CHEST"},
-	{5, "COLLARBONE"},
-	{6, "CHIN"},
-	{8, "HEAD"}
-};
 
 
 int current_cfg = ESP;
@@ -245,22 +225,24 @@ int main(int argc, char** argv)
 				case ESP:
 				{
 					if (max_dist > 100.0f * 40.0f)
+					{
 						max_dist -= 50.0f * 40.0f;
+					}
 					break;
 				}
 				case SMOOTH:
 				{
 					if (smooth > 25)
+					{
 						smooth -= 25;
+					}
 					break;
 				}
 				case BONE:
 				{
-					if (bone_idx > 0)
+					if (bone > 0)
 					{
-						bone_idx--;
-						bone = bone_vec[bone_idx].bone_id;
-						bone_name = bone_vec[bone_idx].bone_name;
+						bone--;
 					}
 					break;
 				}
@@ -299,11 +281,9 @@ int main(int argc, char** argv)
 				}
 				case BONE:
 				{
-					if (bone_idx < (int)bone_vec.size() - 1)
+					if (bone < 10)
 					{
-						bone_idx++;
-						bone = bone_vec[bone_idx].bone_id;
-						bone_name = bone_vec[bone_idx].bone_name;
+						bone++;
 					}
 					break;
 				}
