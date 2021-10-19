@@ -32,10 +32,10 @@ float fov_inc = 5.0f;
 float min_fov = 5.0f;
 float fov = min_fov + 4 * fov_inc;
 
-int bone = 3;
-
+int bone = 0;
+int bone_idx = 1;
 enum cfg { ESP, SMOOTH, BONE, FOV };
-std::string bone_name = "LOWER CHEST";
+std::string bone_name = "STOMACH";
 struct bone_struct
 {
 	int bone_id;
@@ -54,7 +54,7 @@ std::vector<bone_struct> bone_vec = {
 	{6, "CHIN"},
 	{8, "HEAD"}
 };
-int bone_idx = 2;
+
 
 int current_cfg = ESP;
 int aim_key = VK_XBUTTON1;
@@ -243,18 +243,32 @@ int main(int argc, char** argv)
 			switch (current_cfg)
 			{
 				case ESP:
+				{
 					if (max_dist > 100.0f * 40.0f)
 						max_dist -= 50.0f * 40.0f;
 					break;
+				}
 				case SMOOTH:
+				{
 					if (smooth > 25)
 						smooth -= 25;
 					break;
+				}
 				case BONE:
 				{
-					if (bone > 0)
+					if (bone_idx > 0)
 					{
-						bone--;
+						bone_idx--;
+						bone = bone_vec[bone_idx].bone_id;
+						bone_name = bone_vec[bone_idx].bone_name;
+					}
+					break;
+				}
+				case FOV:
+				{
+					if (fov > min_fov)
+					{
+						fov -= fov_inc;
 					}
 					break;
 				}
@@ -268,18 +282,36 @@ int main(int argc, char** argv)
 			switch (current_cfg)
 			{
 				case ESP:
+				{
 					if (max_dist < 800.0f * 40.0f)
+					{
 						max_dist += 50.0f * 40.0f;
+					}
 					break;
+				}
 				case SMOOTH:
+				{
 					if (smooth < max_smooth)
+					{
 						smooth += 25;
+					}
 					break;
+				}
 				case BONE:
 				{
-					if (bone < 10)
+					if (bone_idx < (int)bone_vec.size() - 1)
 					{
-						bone++;
+						bone_idx++;
+						bone = bone_vec[bone_idx].bone_id;
+						bone_name = bone_vec[bone_idx].bone_name;
+					}
+					break;
+				}
+				case FOV:
+				{
+					if (fov < max_fov)
+					{
+						fov += fov_inc;
 					}
 					break;
 				}

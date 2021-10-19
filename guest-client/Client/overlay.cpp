@@ -112,7 +112,7 @@ void Overlay::RenderInfo()
 	{
 		case BONE:
 			curEdit = "BONE";
-			curVal = std::to_string(bone);
+			curVal = bone_name;
 			break;
 		case ESP:
 			curEdit = "ESP";
@@ -121,6 +121,14 @@ void Overlay::RenderInfo()
 		case SMOOTH:
 			curEdit = "SMOOTH";
 			curVal = std::to_string(smooth);
+			break;
+		case FOV:
+			curEdit = "FOV";
+			curVal = std::to_string(fov);
+			break;
+		default:
+			curEdit = "ERROR";
+			curVal = "ERROR";
 			break;
 	}
 
