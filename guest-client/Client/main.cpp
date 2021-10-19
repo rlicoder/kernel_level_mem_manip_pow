@@ -243,40 +243,21 @@ int main(int argc, char** argv)
 			switch (current_cfg)
 			{
 				case ESP:
-				{
 					if (max_dist > 100.0f * 40.0f)
 						max_dist -= 50.0f * 40.0f;
 					break;
-				}
 				case SMOOTH:
-				{
-					if (smooth > smooth_min)
-						smooth -= smooth_inc;
+					if (smooth > 25)
+						smooth -= 25;
 					break;
-				}
 				case BONE:
 				{
-					if (bone_idx > 0)
+					if (bone > 0)
 					{
-						bone_idx--;
-						bone = bone_vec[bone_idx].bone_id;
-						bone_name = bone_vec[bone_idx].bone_name;
+						bone--;
 					}
 					break;
 				}
-				case FOV:
-				{
-					if (fov > min_fov)
-					{
-						fov -= fov_inc;
-					}
-					break;
-				}
-				default:
-				{
-					std::cout << "ERR in left arrow" << std::endl;
-				}
-
 			}
 
 			std::this_thread::sleep_for(std::chrono::milliseconds(135));
@@ -286,41 +267,22 @@ int main(int argc, char** argv)
 		{
 			switch (current_cfg)
 			{
-			case ESP:
-			{
-				if (max_dist < 800.0f * 40.0f)
-					max_dist += 50.0f * 40.0f;
-				break;
-			}
-			case SMOOTH:
-			{
-				if (smooth < max_smooth)
-					smooth += smooth_inc;
-				break;
-			}
-			case BONE:
-			{
-				if (bone_idx < (int)bone_vec.size() - 1)
+				case ESP:
+					if (max_dist < 800.0f * 40.0f)
+						max_dist += 50.0f * 40.0f;
+					break;
+				case SMOOTH:
+					if (smooth < max_smooth)
+						smooth += 25;
+					break;
+				case BONE:
 				{
-					bone_idx++;
-					bone = bone_vec[bone_idx].bone_id;
-					bone_name = bone_vec[bone_idx].bone_name;
+					if (bone < 10)
+					{
+						bone++;
+					}
+					break;
 				}
-				break;
-			}
-			case FOV:
-			{
-				if (fov < max_fov)
-				{
-					fov += fov_inc;
-				}
-				break;
-			}
-			default:
-			{
-				std::cout << "ERR in right arrow" << std::endl;
-			}
-
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(135));
 		}
