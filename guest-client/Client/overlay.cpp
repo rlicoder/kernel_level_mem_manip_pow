@@ -14,8 +14,9 @@ extern float max_dist;
 extern float smooth;
 extern int numSpec;
 extern int current_cfg;
-extern float max_fov;
+extern float fov;
 extern int bone;
+extern std::string bone_name;
 extern bool thirdperson;
 int width;
 int height;
@@ -31,7 +32,7 @@ extern specname specnames[100];
 
 visuals v;
 
-enum cfg { ESP, SMOOTH, BONE };
+enum cfg { ESP, SMOOTH, BONE, FOV };
 enum BONES { BODY = 2, HEAD = 8 };
 
 extern bool IsKeyDown(int vk);
@@ -113,7 +114,7 @@ void Overlay::RenderInfo()
 	{
 		case BONE:
 			curEdit = "BONE";
-			curVal = std::to_string(bone);
+			curVal = bone_name;
 			break;
 		case ESP:
 			curEdit = "ESP";
@@ -122,6 +123,14 @@ void Overlay::RenderInfo()
 		case SMOOTH:
 			curEdit = "SMOOTH";
 			curVal = std::to_string(smooth);
+			break;
+		case FOV:
+			curEdit = "FOV";
+			curVal = std::to_string(fov);
+			break;
+		default:
+			curEdit = "ERROR";
+			curVal = "ERROR";
 			break;
 	}
 	
