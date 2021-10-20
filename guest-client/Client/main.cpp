@@ -33,8 +33,8 @@ float min_fov = 5.0f;
 float fov = min_fov + 4 * fov_inc;
 
 int bone = 3;
+int bone_idx = 1;
 enum cfg { ESP, SMOOTH, BONE, FOV };
-
 
 int current_cfg = ESP;
 int aim_key = VK_XBUTTON1;
@@ -225,24 +225,22 @@ int main(int argc, char** argv)
 				case ESP:
 				{
 					if (max_dist > 100.0f * 40.0f)
-					{
 						max_dist -= 50.0f * 40.0f;
-					}
 					break;
 				}
 				case SMOOTH:
 				{
 					if (smooth > 25)
-					{
 						smooth -= 25;
-					}
 					break;
 				}
 				case BONE:
 				{
-					if (bone > 0)
+					if(bone > 0)
 					{
 						bone--;
+						//DONT FUCKING REMOVE THIS
+						bone_idx--;
 					}
 					break;
 				}
@@ -281,9 +279,11 @@ int main(int argc, char** argv)
 				}
 				case BONE:
 				{
-					if (bone < 10)
+					if (bone < 8)
 					{
 						bone++;
+						//DONT FUCKING REMOVE THIS
+						bone_idx++;
 					}
 					break;
 				}

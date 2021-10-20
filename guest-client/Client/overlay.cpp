@@ -16,6 +16,7 @@ extern int numSpec;
 extern int current_cfg;
 extern float fov;
 extern int bone;
+extern bool thirdperson;
 int width;
 int height;
 bool k_leftclick = false;
@@ -109,26 +110,26 @@ void Overlay::RenderInfo()
 	std::string curVal;
 	switch (current_cfg)
 	{
-		case BONE:
-			curEdit = "BONE";
-			curVal = std::to_string(bone);
-			break;
-		case ESP:
-			curEdit = "ESP";
-			curVal = std::to_string(max_dist / 39.62);
-			break;
-		case SMOOTH:
-			curEdit = "SMOOTH";
-			curVal = std::to_string(smooth);
-			break;
-		case FOV:
-			curEdit = "FOV";
-			curVal = std::to_string(fov);
-			break;
-		default:
-			curEdit = "ERROR";
-			curVal = "ERROR";
-			break;
+	case BONE:
+		curEdit = "BONE";
+		curVal = std::to_string(bone);
+		break;
+	case ESP:
+		curEdit = "ESP";
+		curVal = std::to_string(max_dist / 39.62);
+		break;
+	case SMOOTH:
+		curEdit = "SMOOTH";
+		curVal = std::to_string(smooth);
+		break;
+	case FOV:
+		curEdit = "FOV";
+		curVal = std::to_string(fov);
+		break;
+	default:
+		curEdit = "ERROR";
+		curVal = "ERROR";
+		break;
 	}
 
 	ImGui::TextColored((aim ? GREEN : RED), "%s\n", "AIM");
