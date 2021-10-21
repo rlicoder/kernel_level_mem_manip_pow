@@ -7,7 +7,7 @@
 
     #define OFFSET_GLOBAL_VARS		    0x12cd880
     #define OFFSET_ENTITYLIST			0x1931248
-    #define OFFSET_LOCAL_ENT			0x1cdea28 //LocalPlayer
+    #define OFFSET_LOCAL_ENT			0x1ce0b68 //LocalPlayer
     #define OFFSET_NAME_LIST            0xb740f00
 
     #define OFFSET_TEAM					0x448 //m_iTeamNum
@@ -21,7 +21,7 @@
     #define OFFSET_LIFE_STATE			0x798  //m_lifeState, >0 = dead
     #define OFFSET_BLEED_OUT_STATE		0x26e8 //m_bleedoutState, >0 = knocked
 
-    #define OFFSET_BONES				0xF38 //m_bConstrainBetweenEndpoints
+    #define OFFSET_BONES				0x0f38 //m_bConstrainBetweenEndpoints
 
     #define OFFSET_CAMERAPOS			0x1ef0
     #define OFFSET_VIEWANGLES			0x254C - 0x14 //m_ammoPoolCapacity - 0x14
