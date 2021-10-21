@@ -5,10 +5,10 @@
 
 #if VERSION == STEAM
 
-    #define OFFSET_GLOBAL_VARS		    0x12cd880
-    #define OFFSET_ENTITYLIST			0x192f108
-    #define OFFSET_LOCAL_ENT			0x1cdea28 //LocalPlayer
-    #define OFFSET_NAME_LIST           0xB740F00
+    #define OFFSET_GLOBAL_VARS		    0x12CD880
+    #define OFFSET_ENTITYLIST			0x1931248
+    #define OFFSET_LOCAL_ENT			0x1CE0B68 //LocalPlayer
+    #define OFFSET_NAME_LIST          	0xB740F00
 
     #define OFFSET_TEAM					0x448 //m_iTeamNum
     #define OFFSET_HEALTH				0x438 //m_iHealth
@@ -27,13 +27,13 @@
     #define OFFSET_VIEWANGLES			0x254C - 0x14 //m_ammoPoolCapacity - 0x14
     #define OFFSET_BREATH_ANGLES		OFFSET_VIEWANGLES - 0x10
 
-    #define OFFSET_RENDER				0x75017e0
+    #define OFFSET_RENDER				0x7503A60
 
     #define OFFSET_WEAPON				0x1a6c //m_latestPrimaryWeapons
     #define OFFSET_ZOOM_FOV             0x1700 + 0xb8 //m_playerData + m_curZoomFOV
 
     //use casualx dumper https://casualhacks.net/apexstuff/apexdumper.html
-    #define OFFSET_MATRIX				0x1b3bd0
+    #define OFFSET_MATRIX				0x1D0E640
     #define OFFSET_ABS_VELOCITY         0x140 //m_vecAbsVelocity not found yet
     #define OFFSET_VISIBLE_TIME         0x1ad4 //CPlayer!lastVisibleTime
     #define OFFSET_BULLET_SPEED         0x1ee8 //CWeaponX!m_flProjectileSpeed
