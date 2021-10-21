@@ -40,6 +40,6 @@
     #define OFFSET_BULLET_SCALE         0x1ef0 //CWeaponX!m_flProjectileScale
     #define OFFSET_AIMPUNCH				0x2450 //m_currentFrameLocalPlayer.m_vecPunchWeapon_Angle
     //make sure to use CBaseViewModel
-    #define OFFSET_ORIGIN				0x0004 //m_vecAbsOrigin
+    #define OFFSET_ORIGIN				0x0014c //m_vecAbsOrigin
 
 #endif
