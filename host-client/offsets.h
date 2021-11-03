@@ -35,7 +35,7 @@
     //use casualx dumper https://casualhacks.net/apexstuff/apexdumper.html
     #define OFFSET_MATRIX				0x1b3bd0
     #define OFFSET_ABS_VELOCITY         0x140 //m_vecAbsVelocity not found yet
-    #define OFFSET_VISIBLE_TIME         0x16e0 //CPlayer!lastVisibleTime
+    #define OFFSET_VISIBLE_TIME         0x1af4 //CPlayer!lastVisibleTime
     #define OFFSET_BULLET_SPEED         0x1ef0 //CWeaponX!m_flProjectileSpeed
     #define OFFSET_BULLET_SCALE         0x1ef8//CWeaponX!m_flProjectileScale
     #define OFFSET_AIMPUNCH				0x2480 //m_currentFrameLocalPlayer.m_vecPunchWeapon_Angle

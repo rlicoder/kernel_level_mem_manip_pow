@@ -17,7 +17,7 @@ Memory client_mem;
 
 const int client_screen_width = 1920;
 const int client_screen_height = 1080;
-bool debug = true;
+bool debug = false;
 
 bool firing_range = false;
 bool active = true;
@@ -458,6 +458,8 @@ static void AimbotLoop()
             {
                 if (aimentity == 0 || !aiming)
                 {
+                    if (debug)
+                        std::cout << "failed aimentity or aiming check in aimbotloop" << std::endl;
                     lock=false;
                     lastaimentity=0;
                     continue;
@@ -468,7 +470,8 @@ static void AimbotLoop()
                 apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
                 if (LocalPlayer == 0)
                 {
-                    std::cout << "failed local player read" << std::endl;
+                    if (debug)
+                        std::cout << "failed local player read in aim" << std::endl;
                     continue;
                 }
 
@@ -476,7 +479,8 @@ static void AimbotLoop()
                 QAngle Angles = CalculateBestBoneAim(LPlayer, aimentity, max_fov, smooth, bone);
                 if (Angles.x == 0 && Angles.y == 0)
                 {
-                    std::cout << "failed angle check" << std::endl;
+                    if (debug)
+                        std::cout << "failed angle check" << std::endl;
                     lock=false;
                     lastaimentity=0;
                     continue;
@@ -487,10 +491,13 @@ static void AimbotLoop()
                 bool visible = lastvis > 0.0f && fabsf(lastvis - current_time) < 0.07f;
                 if (!visible)
                 {
+                    if (debug)
+                        std::cout << "failed visibility check in aimbotloop" << std::endl;
                     continue;
                 }
                 LPlayer.SetViewAngles(Angles);
-                std::cout << Angles.x << " " << Angles.y << std::endl;
+                if (debug)
+                    std::cout << Angles.x << " " << Angles.y << std::endl;
             }
         }
     }
