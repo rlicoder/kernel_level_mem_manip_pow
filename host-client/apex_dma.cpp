@@ -17,6 +17,7 @@ Memory client_mem;
 
 const int client_screen_width = 1920;
 const int client_screen_height = 1080;
+bool debug = true;
 
 bool firing_range = false;
 bool active = true;
@@ -114,13 +115,21 @@ void DoActions()
             std::this_thread::sleep_for(std::chrono::milliseconds(30));	
             uint64_t LocalPlayer = 0;
             apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
-            if (LocalPlayer == 0) continue;
+
+            if (LocalPlayer == 0) 
+            {
+                if (debug)
+                    std::cout << "failed localplayer = 0 in doactions" << std::endl;
+                continue;
+            }
 
             Entity LPlayer = getEntity(LocalPlayer);
 
             team_player = LPlayer.getTeamId();
             if (team_player < 0 || team_player>50)
             {
+                if (debug)
+                    std::cout << "failed team player check in doactions" << std::endl;
                 continue;
             }
             uint64_t entitylist = g_Base + OFFSET_ENTITYLIST;
@@ -129,6 +138,8 @@ void DoActions()
             apex_mem.Read<uint64_t>(entitylist, baseent);
             if (baseent == 0)
             {
+                if (debug)
+                    std::cout << "failed baseent check in doactions" << std::endl;
                 continue;
             }
 
@@ -160,12 +171,23 @@ void DoActions()
                 {
                     uint64_t centity = 0;
                     apex_mem.Read<uint64_t>(entitylist + ((uint64_t)i << 5), centity);
-                    if (centity == 0) continue;
-                    if (LocalPlayer == centity) continue;
-
+                    if (centity == 0) 
+                    {
+                        if (debug)
+                            std::cout << "failed centity = 0 check in doactions" << std::endl;
+                        continue;
+                    }
+                    if (LocalPlayer == centity) 
+                    {
+                        if (debug)
+                            std::cout << "failed localplayer == centity check in doactions" << std::endl;
+                        continue;
+                    }
                     Entity Target = getEntity(centity);
                     if (!Target.isPlayer())
                     {
+                        if (debug)
+                            std::cout << "failed player check in doactions" << std::endl;
                         continue;
                     }
 
@@ -174,6 +196,8 @@ void DoActions()
                     int entity_team = Target.getTeamId();
                     if (entity_team == team_player)
                     {
+                        if (debug)
+                            std::cout << "failed team mutual check in doactions" << std::endl;
                         continue;
                     }
 
@@ -442,11 +466,17 @@ static void AimbotLoop()
                 lastaimentity = aimentity;
                 uint64_t LocalPlayer = 0;
                 apex_mem.Read<uint64_t>(g_Base + OFFSET_LOCAL_ENT, LocalPlayer);
-                if (LocalPlayer == 0) continue;
+                if (LocalPlayer == 0)
+                {
+                    std::cout << "failed local player read" << std::endl;
+                    continue;
+                }
+
                 Entity LPlayer = getEntity(LocalPlayer);
                 QAngle Angles = CalculateBestBoneAim(LPlayer, aimentity, max_fov, smooth, bone);
                 if (Angles.x == 0 && Angles.y == 0)
                 {
+                    std::cout << "failed angle check" << std::endl;
                     lock=false;
                     lastaimentity=0;
                     continue;
@@ -460,6 +490,7 @@ static void AimbotLoop()
                     continue;
                 }
                 LPlayer.SetViewAngles(Angles);
+                std::cout << Angles.x << " " << Angles.y << std::endl;
             }
         }
     }
