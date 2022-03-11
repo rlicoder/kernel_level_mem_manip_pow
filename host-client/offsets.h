@@ -5,13 +5,13 @@
 
 #if VERSION == STEAM
 
-    #define OFFSET_GLOBAL_VARS		    0x130d100 //globalvars
-    #define OFFSET_ENTITYLIST			0x1972ea8 //cl_entitylist
-    #define OFFSET_LOCAL_ENT			0x1d22708 //LocalPlayer
-    #define OFFSET_NAME_LIST          	0xba19040 //namelist
-    #define OFFSET_RENDER				0x7512c88 //viewrender
+    #define OFFSET_GLOBAL_VARS		    0x1309840 //globalvars
+    #define OFFSET_ENTITYLIST			0x1974ad8 //cl_entitylist
+    #define OFFSET_LOCAL_ENT			0x1d243d8 //LocalPlayer
+    #define OFFSET_NAME_LIST          	0xb9315d0 //namelist
+    #define OFFSET_RENDER				0x7431238 //viewrender
     #define OFFSET_CAMERAPOS			0x1f20 //Cplayer camera_origin
-    #define OFFSET_MATRIX				0x1b3bd0 //viewmatrix
+    #define OFFSET_MATRIX				0x10e8d0 //viewmatrix
 
     #define OFFSET_TEAM					0x448 //m_iTeamNum
     #define OFFSET_HEALTH				0x438 //m_iHealth
@@ -22,7 +22,7 @@
     #define OFFSET_ZOOMING      		0x1c31 //m_bZooming
 
     #define OFFSET_LIFE_STATE			0x0798//m_lifeState, >0 = dead
-    #define OFFSET_BLEED_OUT_STATE		0x2718 //m_bleedoutState, >0 = knocked
+    #define OFFSET_BLEED_OUT_STATE		0x2708 //m_bleedoutState, >0 = knocked
 
     #define OFFSET_BONES				0x0f38 //m_bConstrainBetweenEndpoints
 
@@ -33,7 +33,7 @@
     
 
     #define OFFSET_WEAPON				0x1a8c //m_latestPrimaryWeapons
-    #define OFFSET_ZOOM_FOV             0x1700 + 0xb8 //m_playerData + m_curZoomFOV
+    #define OFFSET_ZOOM_FOV             0x1708 + 0xb8 //m_playerData + m_curZoomFOV
 
     //use casualx dumper https://casualhacks.net/apexstuff/apexdumper.html
     
