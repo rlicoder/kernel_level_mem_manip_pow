@@ -263,7 +263,7 @@ int main(int argc, char** argv)
 			{
 				case ESP:
 				{
-					if (max_dist < 800.0f * 40.0f)
+					if (max_dist < 2000.0f * 40.0f)
 					{
 						max_dist += 50.0f * 40.0f;
 					}
