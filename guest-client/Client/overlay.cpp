@@ -89,8 +89,10 @@ void ResetDevice();
 
 void Overlay::RenderInfo()
 {
+	int deadPeople = numSpec % 10;
+	int spectators = numSpec / 10;
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(150, 120 + (20 * numSpec)));
+	ImGui::SetNextWindowSize(ImVec2(150, 140 + (20 * spectators)));
 	ImGui::Begin(XorStr("##info"), (bool*)true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
 	switch (safe_level)
 	{
@@ -138,10 +140,11 @@ void Overlay::RenderInfo()
 	ImGui::TextColored(YELLOW, "%s\n", curEdit);
 	ImGui::TextColored(WHITE, "%s\n\n", curVal);
 
-	ImGui::TextColored((numSpec == 0 ? GREEN : RED), "%s: %d\n", "SPECTATORS", numSpec);
-	for (int i = 0; i < numSpec; i++)
+	ImGui::TextColored((deadPeople == 0 ? GREEN : RED), "%s: %d\n", "DEAD", deadPeople);
+	ImGui::TextColored((spectators == 0 ? GREEN : RED), "%s: %d\n", "SPECTATORS", spectators);
+	for (int i = 0; i < spectators; i++)
 	{
-		String(ImVec2(10, 120 + (20 * i)), WHITE, specnames[i].name);
+		ImGui::TextColored(WHITE, "%s\n", specnames[i].name);
 	}
 
 	ImGui::SameLine();
