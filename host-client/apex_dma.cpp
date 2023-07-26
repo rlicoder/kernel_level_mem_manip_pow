@@ -15,8 +15,8 @@
 Memory apex_mem;
 Memory client_mem;
 
-const int client_screen_width = 1920;
-const int client_screen_height = 1080;
+const int client_screen_width = 3840;
+const int client_screen_height = 2160;
 
 bool firing_range = false;
 bool active = true;

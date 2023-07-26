@@ -1,0 +1,11 @@
+/home/sebastian/RoyceApexHacks/host-client/memflow_lib/target/release/deps/widestring-a28a3f35c3f8f394.rmeta: /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/lib.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ucstr.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ucstring.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ustr.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ustring.rs
+
+/home/sebastian/RoyceApexHacks/host-client/memflow_lib/target/release/deps/libwidestring-a28a3f35c3f8f394.rlib: /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/lib.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ucstr.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ucstring.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ustr.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ustring.rs
+
+/home/sebastian/RoyceApexHacks/host-client/memflow_lib/target/release/deps/widestring-a28a3f35c3f8f394.d: /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/lib.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ucstr.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ucstring.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ustr.rs /home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ustring.rs
+
+/home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/lib.rs:
+/home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ucstr.rs:
+/home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ucstring.rs:
+/home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ustr.rs:
+/home/sebastian/.cargo/registry/src/github.com-1ecc6299db9ec823/widestring-0.4.3/src/ustring.rs:
