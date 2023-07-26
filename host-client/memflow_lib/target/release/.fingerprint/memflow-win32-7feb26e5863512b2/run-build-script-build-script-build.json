@@ -1,5 +1,0 @@
-<<<<<<< HEAD
-{"rustc":16637017585618592665,"features":"","target":0,"profile":0,"path":0,"deps":[[12193326018406143444,"build_script_build",false,16426960890786632662]],"local":[{"Precalculated":"1634861957.976562845s (src/kernel/start_block/x86pae.rs)"}],"rustflags":[],"metadata":0,"config":0}
-=======
-{"rustc":16637017585618592665,"features":"","target":0,"profile":0,"path":0,"deps":[[12193326018406143444,"build_script_build",false,14432776936388475355]],"local":[{"Precalculated":"1634859979.004670605s (Cargo.toml)"}],"rustflags":[],"metadata":0,"config":0}
->>>>>>> 794b56874c2529b4e8bf1318d71c234b87c8d122

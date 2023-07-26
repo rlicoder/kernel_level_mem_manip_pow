@@ -1,12 +1,9 @@
 **.vs
-<<<<<<< HEAD
 **x64
 *.swp
 *~
 .DS_Store
-host-client/__pycache__/
-
-=======
-.DS_Store
+**/__pycache__/
 **/build/
->>>>>>> 794b56874c2529b4e8bf1318d71c234b87c8d122
+**/memflow_lib/**/target
+

@@ -1,1 +1,0 @@
-{"rustc":16637017585618592665,"features":"[\"alloc\", \"std\"]","target":13890793949269243583,"profile":10796641224631929329,"path":728443722144505207,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"release/.fingerprint/no-std-compat-76700b833bcaab32/dep-lib-no-std-compat"}}],"rustflags":[],"metadata":17710505991379241198,"config":0}
