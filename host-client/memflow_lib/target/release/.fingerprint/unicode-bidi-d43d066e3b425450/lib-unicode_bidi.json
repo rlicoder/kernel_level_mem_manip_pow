@@ -1,0 +1,1 @@
+{"rustc":11256121715503277025,"features":"[\"default\", \"std\"]","target":5451308740753819346,"profile":6269190295429226618,"path":17334057261614027604,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"release/.fingerprint/unicode-bidi-d43d066e3b425450/dep-lib-unicode_bidi"}}],"rustflags":[],"metadata":13044594939122926492,"config":2202906307356721367,"compile_kind":0}
