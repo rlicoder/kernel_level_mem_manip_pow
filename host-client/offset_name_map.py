@@ -1,10 +1,12 @@
 names = dict()
 names["cl_entitylist"] = "OFFSET_ENTITYLIST"
-names[".?AVC_GameMovement@@"] = "OFFSET_AVC_GAMEMOVEMENT"
+#can't find it in pastebins anymore. Was used to calculate LOCAL_ENT but now there are others ways. See: https://www.unknowncheats.me/forum/apex-legends/319804-apex-legends-reversal-structs-offsets-668.html
+#names[".?AVC_GameMovement@@"] = "OFFSET_AVC_GAMEMOVEMENT"
 names["GlobalVars"] = "OFFSET_GLOBAL_VARS"
 names["NameList"] = "OFFSET_NAME_LIST"
 names["ViewRender"] = "OFFSET_RENDER"
 names["ViewMatrix"] = "OFFSET_MATRIX"
+#See: https://www.unknowncheats.me/forum/apex-legends/319804-apex-legends-reversal-structs-offsets-668.html
 names["CWeaponX!m_flProjectileSpeed"] = "OFFSET_BULLET_SPEED"
 names["CWeaponX!m_flProjectileScale"] = "OFFSET_BULLET_SCALE"
 names["CPlayer!lastVisibleTime"] = "OFFSET_VISIBLE_TIME"
