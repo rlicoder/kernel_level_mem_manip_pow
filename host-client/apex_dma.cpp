@@ -15,8 +15,8 @@
 Memory apex_mem;
 Memory client_mem;
 
-const int client_screen_width = 3840;
-const int client_screen_height = 2160;
+const int client_screen_width = 2560;
+const int client_screen_height = 1440;
 
 bool firing_range = false;
 bool active = true;
@@ -605,7 +605,7 @@ int main(int argc, char *argv[])
     }
 
     const char* cl_proc = "client_ap.exe";
-    const char* ap_proc = "R5Apex.exe";
+    const char* ap_proc = "r5apex.exe";
     //const char* ap_proc = "EasyAntiCheat_launcher.exe";
 
     //Client "add" offset

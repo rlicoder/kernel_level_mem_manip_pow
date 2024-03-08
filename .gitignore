@@ -4,6 +4,7 @@
 *~
 .DS_Store
 **/__pycache__/
-**/build/
+**/build/*
 **/memflow_lib/**/target
-
+royce_temp
+host-client/input.txt
