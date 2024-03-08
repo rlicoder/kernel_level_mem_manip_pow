@@ -89,8 +89,7 @@ void ResetDevice();
 
 void Overlay::RenderInfo()
 {
-	int deadPeople = numSpec % 10;
-	int spectators = numSpec / 10;
+	int spectators = numSpec;
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImVec2(150, 140 + (20 * spectators)));
 	ImGui::Begin(XorStr("##info"), (bool*)true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
@@ -140,7 +139,6 @@ void Overlay::RenderInfo()
 	ImGui::TextColored(YELLOW, "%s\n", curEdit);
 	ImGui::TextColored(WHITE, "%s\n\n", curVal);
 
-	ImGui::TextColored((deadPeople == 0 ? GREEN : RED), "%s: %d\n", "DEAD", deadPeople);
 	ImGui::TextColored((spectators == 0 ? GREEN : RED), "%s: %d\n", "SPECTATORS", spectators);
 	for (int i = 0; i < spectators; i++)
 	{
