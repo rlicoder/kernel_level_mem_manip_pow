@@ -434,7 +434,7 @@ static void SpecList()
             char name[33];
             if (!alive && !teamalive[teamid])
             {
-                target.get_name(g_Base, i-1, &speclist[c++].name[0]);
+                target.get_name(g_Base, i, &speclist[c++].name[0]);
                 cur++;
             }
         }
