@@ -8,3 +8,6 @@
 **/memflow_lib/**/target
 royce_temp
 host-client/input.txt
+**/.idea/
+**/BACKUP_offsets.h
+
