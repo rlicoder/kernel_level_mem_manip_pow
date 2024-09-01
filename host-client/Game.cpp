@@ -19,6 +19,19 @@ std::string Entity::getName()
     return name;
 }
 
+bool Entity::Observing(uint64_t entitylist)
+{
+	/*uint64_t index = *(uint64_t*)(buffer + OFFSET_OBSERVING_TARGET);
+	index &= ENT_ENTRY_MASK;
+	if (index > 0)
+	{
+		uint64_t centity2 = apex_mem.Read<uint64_t>(entitylist + ((uint64_t)index << 5));
+		return centity2;
+	}
+	return 0;*/
+	return *(bool*)(buffer + OFFSET_OBSERVER_MODE);
+}
+
 //https://github.com/CasualX/apexbot/blob/master/src/state.cpp#L104
 void get_class_name(uint64_t entity_ptr, char* out_str)
 {
@@ -103,6 +116,44 @@ Vector Entity::getBonePosition(int id)
 	bone.y = bo.y + position.y;
 	bone.z = bo.z + position.z;
 	return bone;
+}
+
+//https://www.unknowncheats.me/forum/apex-legends/496984-getting-hitbox-positions-cstudiohdr-externally.html
+//https://www.unknowncheats.me/forum/3499185-post1334.html
+//https://www.unknowncheats.me/forum/3562047-post11000.html
+Vector Entity::getBonePositionByHitbox(int id)
+{
+	Vector origin = getPosition();
+
+	//BoneByHitBox
+	uint64_t Model = *(uint64_t*)(buffer + OFFSET_STUDIOHDR);
+
+	//get studio hdr
+	uint64_t StudioHdr;
+	apex_mem.Read<uint64_t>(Model + 0x8, StudioHdr);
+
+	//get hitbox array
+	uint16_t HitboxCache;
+	apex_mem.Read<uint16_t>(StudioHdr + 0x34, HitboxCache);
+	uint64_t HitBoxsArray = StudioHdr + ((uint16_t)(HitboxCache & 0xFFFE) << (4 * (HitboxCache & 1)));
+
+	uint16_t IndexCache;
+	apex_mem.Read<uint16_t>(HitBoxsArray + 0x4, IndexCache);
+	int HitboxIndex = ((uint16_t)(IndexCache & 0xFFFE) << (4 * (IndexCache & 1)));
+
+	uint16_t Bone;
+	apex_mem.Read<uint16_t>(HitBoxsArray + HitboxIndex + (id * 0x20), Bone);
+
+	if(Bone < 0 || Bone > 255)
+		return Vector();
+
+	//hitpos
+	uint64_t BoneArray = *(uint64_t*)(buffer + OFFSET_BONES);
+
+	matrix3x4_t Matrix = {};
+	apex_mem.Read<matrix3x4_t>(BoneArray + Bone * sizeof(matrix3x4_t), Matrix);
+
+	return Vector(Matrix.m_flMatVal[0][3] + origin.x, Matrix.m_flMatVal[1][3] + origin.y, Matrix.m_flMatVal[2][3] + origin.z);
 }
 
 QAngle Entity::GetSwayAngles()

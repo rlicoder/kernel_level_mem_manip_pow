@@ -79,18 +79,31 @@ struct Matrix
 float lastvis_esp[toRead];
 float lastvis_aim[toRead];
 
+int tmp_spec = 0, spectators = 0;
+int tmp_all_spec = 0, allied_spectators = 0;
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 void ProcessPlayer(Entity& LPlayer, Entity& target, uint64_t entitylist, int index)
 {
     int entity_team = target.getTeamId();
+
+    if (!target.isAlive())
+    {
+        if(target.Observing(LPlayer.ptr))
+        {
+            if (LPlayer.getTeamId() == entity_team)
+                tmp_all_spec++;
+            else
+                tmp_spec++;
+        }
+        return;
+    }
+
     Vector EntityPosition = target.getPosition();
     Vector LocalPlayerPosition = LPlayer.getPosition();
     float dist = LocalPlayerPosition.DistTo(EntityPosition);
     if (dist > max_dist) return;
-
-    if (!target.isAlive())
-        return;
 
     if(!firing_range)
         if (entity_team < 0 || entity_team>50 || entity_team == team_player) return;
@@ -144,6 +157,8 @@ void DoActions()
 
             max = 999.0f;
             tmp_aimentity = 0;
+            tmp_spec = 0;
+            tmp_all_spec = 0;
             if(firing_range)
             {
                 int c=0;
@@ -202,6 +217,10 @@ void DoActions()
 
                 }
             }
+
+            spectators = tmp_spec;
+            allied_spectators = tmp_all_spec;
+
             if(!lock)
                 aimentity = tmp_aimentity;
             else
@@ -318,8 +337,8 @@ static void EspLoop()
                             };
                             Target.get_name(g_Base, i-1, &players[c].name[0]);
                             lastvis_esp[c] = Target.lastVisTime();
-                            c++;
                             valid = true;
+                            c++;
                         }
                     }
                 }	
@@ -511,7 +530,7 @@ static void set_vars(uint64_t add_addr)
     uint64_t spec_addr = 0;
     client_mem.Read<uint64_t>(add_addr, spec_addr);
     uint64_t aim_addr = 0;
-    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*1, aim_addr);
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t), aim_addr);
     uint64_t esp_addr = 0;
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*2, esp_addr);
     uint64_t safe_lev_addr = 0;
@@ -538,11 +557,15 @@ static void set_vars(uint64_t add_addr)
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*13, bone_addr);
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*14, speclist_addr);
     client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*15, numSpec_addr);
+    uint64_t spectators_addr = 0;
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*16, spectators_addr);
+    uint64_t allied_spectators_addr = 0;
+    client_mem.Read<uint64_t>(add_addr + sizeof(uint64_t)*17, allied_spectators_addr);
 
-    int tmp = 0;
-    client_mem.Read<int>(spec_addr, tmp);
+    int check = 0;
+    client_mem.Read<int>(spec_addr, check);
 
-    if(tmp != 1)
+    if(check != 1)
     {
         printf("Incorrect values read. Check if the add_off is correct. Quitting.\n");
         active = false;
@@ -560,6 +583,8 @@ static void set_vars(uint64_t add_addr)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
             client_mem.Write<uint64_t>(g_Base_addr, g_Base);
+            client_mem.Write<int>(spectators_addr, spectators);
+            client_mem.Write<int>(allied_spectators_addr, allied_spectators);
             //lmao...
             uint64_t a = 0;
             client_mem.Write<uint64_t>(spec_addr, a);
