@@ -35,5 +35,5 @@
 
 // Undefined
 #define OFFSET_STUDIOHDR 0x0000
-#define OFFSET_OBSERVER_MODE 0x0000
+#define OFFSET_OBSERVER_LIST 0x0000
 #endif
