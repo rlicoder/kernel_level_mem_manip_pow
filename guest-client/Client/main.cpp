@@ -55,15 +55,18 @@ uint64_t g_Base = 0; //write
 bool thirdperson = false;
 typedef struct specname
 {
-	char name[33] = { 0 };
+	char name[65] = { 0 };
 }specname;
 specname specnames[100];
 int numSpec = 0;
 
+specname deadnames[100];
+int numDead = 0;
+
 bool valid = false; //write
 bool next = false; //read write
 
-uint64_t add[16];
+uint64_t add[18];
 
 bool k_f5 = 0;
 bool k_f6 = 0;
@@ -155,6 +158,8 @@ int main(int argc, char** argv)
 	add[13] = (uintptr_t)&bone;
 	add[14] = (uintptr_t)&specnames[0];
 	add[15] = (uintptr_t)&numSpec;
+	add[16] = (uintptr_t)&deadnames[0];
+	add[17] = (uintptr_t)&numDead;
 	printf(XorStr("add offset: 0x%I64x\n"), (uint64_t)&add[0] - (uint64_t)GetModuleHandle(NULL));
 	Overlay ov1 = Overlay();
 	ov1.Start();

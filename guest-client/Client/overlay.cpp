@@ -1,4 +1,5 @@
 #include "overlay.h"
+#include <iostream>
 
 extern bool aim;
 extern bool esp;
@@ -17,6 +18,7 @@ extern int current_cfg;
 extern float fov;
 extern int bone;
 extern bool thirdperson;
+extern int numDead;
 int width;
 int height;
 bool k_leftclick = false;
@@ -25,9 +27,11 @@ bool show_menu = false;
 
 typedef struct specname
 {
-	char name[33] = { 0 };
+	char name[65] = { 0 };
 }specname;
 extern specname specnames[100];
+
+extern specname deadnames[100];
 
 visuals v;
 
@@ -89,9 +93,10 @@ void ResetDevice();
 
 void Overlay::RenderInfo()
 {
-	int spectators = numSpec;
+	int numberDead = numDead;
+	int numberSpectating = numSpec;
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(150, 140 + (20 * spectators)));
+	ImGui::SetNextWindowSize(ImVec2(185, 140 + (18 * numberSpectating) + (18 * numberDead)));
 	ImGui::Begin(XorStr("##info"), (bool*)true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
 	switch (safe_level)
 	{
@@ -138,9 +143,13 @@ void Overlay::RenderInfo()
 
 	ImGui::TextColored(YELLOW, "%s\n", curEdit);
 	ImGui::TextColored(WHITE, "%s\n\n", curVal);
-
-	ImGui::TextColored((spectators == 0 ? GREEN : RED), "%s: %d\n", "SPECTATORS", spectators);
-	for (int i = 0; i < spectators; i++)
+	ImGui::TextColored((numberDead == 0 ? GREEN : RED), "%s: %d\n", "DEAD", numberDead);
+	for (int i = 0; i < numberDead; i++)
+	{
+		ImGui::TextColored(WHITE, "%s\n", deadnames[i].name);
+	}
+	ImGui::TextColored((numberSpectating == 0 ? GREEN : RED), "%s: %d\n", "SPECTATORS", numberSpectating);
+	for (int i = 0; i < numberSpectating; i++)
 	{
 		ImGui::TextColored(WHITE, "%s\n", specnames[i].name);
 	}
